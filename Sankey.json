@@ -7,7 +7,6 @@
     "id": "com.sap.sample.sankey",
     "newInstancePrefix": "Sankey",
     "version": "0.0.1",
-    "supportsLinkedAnalysisFilterOnSelection": true,
     "webcomponents": [
         {
             "kind": "main",
