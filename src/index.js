@@ -1,8 +1,8 @@
 import Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
 Exporting(Highcharts);
-import HighchartsSankey from 'highcharts/modules/sankey';
-HighchartsSankey(Highcharts);
+import Sankey from 'highcharts/modules/sankey';
+Sankey(Highcharts);
 
 /**
  * Parses metadata into structured dimensions and measures.
