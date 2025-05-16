@@ -17,6 +17,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "highcharts": "^11.4.7"
+    "highcharts": "^11.4.8"
   }
 }

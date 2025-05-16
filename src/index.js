@@ -1,19 +1,9 @@
 import Highcharts from 'highcharts';
-
-let isSankeyLoaded = false;
-
-function loadSankeyModule() {
-    if (isSankeyLoaded) {
-        return Promise.resolve();
-    }
-    return import('highcharts/modules/sankey').then(Sankey => {
-        Sankey(Highcharts);
-        isSankeyLoaded = true;
-        console.log('Sankey module loaded:', Sankey);
-    });
-}
+import SankeyChart from 'highcharts/modules/sankey';
+SankeyChart(Highcharts);
 
 console.log('Highcharts:', Highcharts);
+console.log('Sankey:', SankeyChart);
 
 /**
  * Parses metadata into structured dimensions and measures.
@@ -108,7 +98,7 @@ var parseMetadata = metadata => {
         /**
          * Renders the chart using the provided data and metadata.
          */
-        async _renderChart() {
+        _renderChart() {
             const dataBinding = this.dataBinding;
             if (!dataBinding || dataBinding.state !== 'success' || !dataBinding.data || dataBinding.data.length === 0) {
                 if (this._chart) {
@@ -117,10 +107,6 @@ var parseMetadata = metadata => {
                 }
                 return;
             }
-
-            await loadSankeyModule();
-
-
             console.log('dataBinding:', dataBinding);
             const { data, metadata } = dataBinding;
             const { dimensions, measures } = parseMetadata(metadata);
