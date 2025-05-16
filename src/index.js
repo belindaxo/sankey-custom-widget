@@ -1,8 +1,10 @@
 import Highcharts from 'highcharts';
-import Exporting from 'highcharts/modules/exporting';
-Exporting(Highcharts);
 import Sankey from 'highcharts/modules/sankey';
 Sankey(Highcharts);
+
+console.log('Highcharts:', Highcharts);
+console.log('Exporting:', Exporting);
+console.log('Sankey:', Sankey);
 
 /**
  * Parses metadata into structured dimensions and measures.
@@ -79,7 +81,19 @@ var parseMetadata = metadata => {
                 this._chart.destroy();
                 this._chart = null;
             }
-            this._selectedPoint = null; // Reset selection when chart is destroyed
+        }
+
+        /**
+        * Called when an observed attribute changes.
+        * @param {string} name - The name of the changed attribute.
+        * @param {string} oldValue - The old value of the attribute.
+        * @param {string} newValue - The new value of the attribute.
+        */
+        attributeChangedCallback(name, oldValue, newValue) {
+            if (oldValue !== newValue) {
+                this[name] = newValue;
+                this._renderChart();
+            }
         }
 
         /**
@@ -120,7 +134,7 @@ var parseMetadata = metadata => {
             data.forEach(row => {
                 const { label, id, parentId } = row[dimension.key];
                 const { raw } = row[measure.key];
-                nodes.push({name: label});
+                nodes.push({ name: label });
 
                 const rowParent = data.find(d => {
                     const { id } = d[dimension.key];
@@ -151,11 +165,8 @@ var parseMetadata = metadata => {
                     nodes: nodes,
                     data: links.map(link => [link.from, link.to, link.value]),
                     type: 'sankey'
-                }],
-                exporting: {
-                    enabled: false
-                }
-            }
+                }]
+            };
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
         }
     }
