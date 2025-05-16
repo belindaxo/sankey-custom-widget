@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Highcharts Test</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<body>
+    <script>
+        class MyCustomElement extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open'});
+                    
+                const sheet = new CSSStyleSheet();
+                sheet.replaceSync(`
+                    #parent-container {
+                        width: 700px;
+                        height: 500px;
+                        margin: 0 auto;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    #container {
+                        width: 100%;
+                        height: 100%;
+                    }
+                `);
+                
+                this.shadowRoot.adoptedStyleSheets = [sheet];
+
+                this.shadowRoot.innerHTML = `
+                    <div id="parent-container">
+                        <div id="container"></div>
+                    </div>
+                `;
+
+                this._renderChart();
+            }
+
+            _renderChart() {
+                const container = this.shadowRoot.querySelector('#container');
+                
+                Highcharts.chart(container, {
+
+                });
+            }
+        }
+        customElements.define('my-custom-element', MyCustomElement);
+    </script>
+    <my-custom-element></my-custom-element>
+</body>
+    <form id="form">
+        <legend style="font-weight: bold;font-size: 18px;"> Font </legend>
+        <table>
+            <tr>
+                <td>Chart Title</td>
+            </tr>
+            <tr>
+                <td><input id="chartTitle" type="text"></td>
+            </tr>
+            <tr>
+                <table>
+                    <tr>
+                        <td>Size</td>
+                        <td>Font Style</td>
+                        <td>Alignment</td>
+                        <td>Color</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select id="titleSize">
+                                <option value="10px">10</option>
+                                <option value="12px">12</option>
+                                <option value="14px">14</option>
+                                <option value="16px">16</option>
+                                <option value="18px" selected>18</option>
+                                <option value="20px">20</option>
+                                <option value="22px">22</option>
+                                <option value="24px">24</option>
+                                <option value="32px">32</option>
+                                <option value="48px">48</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="titleFontStyle">
+                                <option value="normal">Normal</option>
+                                <option value="bold" selected>Bold</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="titleAlignment">
+                                <option value="left" selected>Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input id="titleColor" type="color" value="#333333">
+                        </td>
+                    </tr>
+                </table>
+            </tr>
+        </table>
+        <input type="submit" style="display:none;">
+        </form>
+</body>
+</html>

@@ -1,0 +1,163 @@
+import Highcharts from 'highcharts';
+import Exporting from 'highcharts/modules/exporting';
+Exporting(Highcharts);
+import HighchartsSankey from 'highcharts/modules/sankey';
+HighchartsSankey(Highcharts);
+
+/**
+ * Parses metadata into structured dimensions and measures.
+ * @param {Object} metadata - The metadata object from SAC data binding.
+ * @returns {Object} An object containing parsed dimensions, measures, and their maps.
+ */
+var parseMetadata = metadata => {
+    const { dimensions: dimensionsMap, mainStructureMembers: measuresMap } = metadata;
+    const dimensions = [];
+    for (const key in dimensionsMap) {
+        const dimension = dimensionsMap[key];
+        dimensions.push({ key, ...dimension });
+    }
+
+    const measures = [];
+    for (const key in measuresMap) {
+        const measure = measuresMap[key];
+        measures.push({ key, ...measure });
+    }
+    return { dimensions, measures, dimensionsMap, measuresMap };
+}
+
+(function () {
+    class Sankey extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: 'open' });
+
+            // Create a CSSStyleSheet for the shadow DOM
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(`
+                @font-face {
+                    font-family: '72';
+                    src: url('../fonts/72-Regular.woff2') format('woff2');
+                }
+                #container {
+                    width: 100%;
+                    height: 100%;
+                    font-family: '72';
+                }
+            `);
+
+            // Apply the stylesheet to the shadow DOM
+            this.shadowRoot.adoptedStyleSheets = [sheet];
+
+            // Add the container for the chart
+            this.shadowRoot.innerHTML = `
+                <div id="container"></div>    
+            `;
+        }
+
+        /**
+         * Called when the widget is resized.
+         * @param {number} width - New width of the widget.
+         * @param {number} height - New height of the widget.
+         */
+        onCustomWidgetResize(width, height) {
+            this._renderChart();
+        }
+
+        /**
+         * Called after widget properties are updated.
+         * @param {Object} changedProperties - Object containing changed attributes.
+         */
+        onCustomWidgetAfterUpdate(changedProperties) {
+            this._renderChart();
+        }
+
+        /**
+         * Called when the widget is destroyed. Cleans up chart instance.
+         */
+        onCustomWidgetDestroy() {
+            if (this._chart) {
+                this._chart.destroy();
+                this._chart = null;
+            }
+            this._selectedPoint = null; // Reset selection when chart is destroyed
+        }
+
+        /**
+         * Renders the chart using the provided data and metadata.
+         */
+        _renderChart() {
+            const dataBinding = this.dataBinding;
+            if (!dataBinding || dataBinding.state !== 'success' || !dataBinding.data || dataBinding.data.length === 0) {
+                if (this._chart) {
+                    this._chart.destroy();
+                    this._chart = null;
+                }
+                return;
+            }
+            console.log('dataBinding:', dataBinding);
+            const { data, metadata } = dataBinding;
+            const { dimensions, measures } = parseMetadata(metadata);
+            const [dimension] = dimensions;
+            const [measure] = measures;
+            const nodes = [];
+            const links = [];
+
+            console.log('data:', data);
+            console.log('metadata:', metadata);
+            console.log('dimensions:', dimensions);
+            console.log('measures:', measures);
+            console.log('dimension:', dimension);
+            console.log('measure:', measure);
+
+            if (dimensions.length === 0 || measures.length === 0) {
+                if (this._chart) {
+                    this._chart.destroy();
+                    this._chart = null;
+                }
+                return;
+            }
+
+            data.forEach(row => {
+                const { label, id, parentId } = row[dimension.key];
+                const { raw } = row[measure.key];
+                nodes.push({name: label});
+
+                const rowParent = data.find(d => {
+                    const { id } = d[dimension.key];
+                    return id === parentId;
+                });
+                if (rowParent) {
+                    const { label: parentLabel } = rowParent[dimension.key];
+                    links.push({
+                        from: parentLabel,
+                        to: label,
+                        value: raw
+                    });
+                }
+            });
+
+            console.log('nodes:', nodes);
+            console.log('links:', links);
+
+            const chartOptions = {
+                chart: {
+                    type: 'sankey',
+                    style: {
+                        fontFamily: "'72', sans-serif"
+                    },
+                },
+                series: [{
+                    keys: ['from', 'to', 'weight'],
+                    nodes: nodes,
+                    data: links.map(link => [link.from, link.to, link.value]),
+                    type: 'sankey'
+                }],
+                exporting: {
+                    enabled: false
+                }
+            }
+            this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
+        }
+    }
+    customElements.define('com-sap-sample-sankey', Sankey);
+})();

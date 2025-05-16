@@ -1,0 +1,53 @@
+{
+    "name": "Sankey Chart",
+    "description": "A Sankey chart with data binding support",
+    "eula": "",
+    "vendor": "",
+    "license": "",
+    "id": "com.sap.sample.sankey",
+    "newInstancePrefix": "Sankey",
+    "version": "0.0.1",
+    "supportsLinkedAnalysisFilterOnSelection": true,
+    "webcomponents": [
+        {
+            "kind": "main",
+            "tag": "com-sap-sample-sankey",
+            "url": "https://belindaxo.github.io/sankey-custom-widget/dist/bundle.js",
+            "integrity": "",
+            "ignoreIntegrity": true
+        }
+    ],
+    "properties": {
+        "width": {
+            "type": "integer",
+            "default": 600
+        },
+        "height": {
+            "type": "integer",
+            "default": 400
+        }
+    },
+    "methods": {
+
+    },
+    "events": {
+
+    },
+    "dataBindings": {
+        "dataBinding": {
+            "feeds": [
+                {
+                    "id": "dimensions",
+                    "description": "Dimensions",
+                    "type": "dimension"
+                },
+                {
+                    "id": "measures",
+                    "description": "Measures",
+                    "type": "mainStructureMember"
+                }
+            ]
+        }
+    }
+
+}
