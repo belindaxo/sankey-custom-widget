@@ -1,14 +1,19 @@
 import Highcharts from 'highcharts';
 
+let isSankeyLoaded = false;
+
 function loadSankeyModule() {
+    if (isSankeyLoaded) {
+        return Promise.resolve();
+    }
     return import('highcharts/modules/sankey').then(Sankey => {
         Sankey(Highcharts);
+        isSankeyLoaded = true;
         console.log('Sankey module loaded:', Sankey);
     });
 }
 
 console.log('Highcharts:', Highcharts);
-console.log('Sankey:', Sankey);
 
 /**
  * Parses metadata into structured dimensions and measures.
@@ -112,7 +117,7 @@ var parseMetadata = metadata => {
                 }
                 return;
             }
-            
+
             await loadSankeyModule();
 
 
