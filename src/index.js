@@ -1,9 +1,13 @@
 import Highcharts from 'highcharts';
-import Sankey from 'highcharts/modules/sankey';
-Sankey(Highcharts);
+
+function loadSankeyModule() {
+    return import('highcharts/modules/sankey').then(Sankey => {
+        Sankey(Highcharts);
+        console.log('Sankey module loaded:', Sankey);
+    });
+}
 
 console.log('Highcharts:', Highcharts);
-console.log('Exporting:', Exporting);
 console.log('Sankey:', Sankey);
 
 /**
@@ -99,7 +103,7 @@ var parseMetadata = metadata => {
         /**
          * Renders the chart using the provided data and metadata.
          */
-        _renderChart() {
+        async _renderChart() {
             const dataBinding = this.dataBinding;
             if (!dataBinding || dataBinding.state !== 'success' || !dataBinding.data || dataBinding.data.length === 0) {
                 if (this._chart) {
@@ -108,6 +112,10 @@ var parseMetadata = metadata => {
                 }
                 return;
             }
+            
+            await loadSankeyModule();
+
+
             console.log('dataBinding:', dataBinding);
             const { data, metadata } = dataBinding;
             const { dimensions, measures } = parseMetadata(metadata);
