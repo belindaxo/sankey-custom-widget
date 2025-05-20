@@ -218,12 +218,12 @@ var parseMetadata = metadata => {
         _formatTooltipPoint(scaleFormat) {
             return function () {
                 console.log(this);
-                if (this.point) {
-                    const { scaledValue, valueSuffix } = scaleFormat(this.point.weight);
+                if (this) {
+                    const { scaledValue, valueSuffix } = scaleFormat(this.weight);
                     const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
                     const valueWithSuffix = `${value} ${valueSuffix}`;
-                    const fromNodeName = this.point.fromNode.name;
-                    const toNodeName = this.point.toNode.name;
+                    const fromNodeName = this.from;
+                    const toNodeName = this.to;
                     return `
                         ${fromNodeName} \u2192 ${toNodeName}: ${valueWithSuffix}
                     `;
@@ -240,11 +240,11 @@ var parseMetadata = metadata => {
          */
         _formatTooltipNode(scaleFormat) {
             return function () {
-                if (this.point) {
-                    const { scaledValue, valueSuffix } = scaleFormat(this.point.sum);
+                if (this) {
+                    const { scaledValue, valueSuffix } = scaleFormat(this.sum);
                     const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
                     const valueWithSuffix = `${value} ${valueSuffix}`;
-                    const name = this.point.name;
+                    const name = this.name;
                     return `
                         ${name}: ${valueWithSuffix}
                     `;
