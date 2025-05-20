@@ -107,7 +107,7 @@ var parseMetadata = metadata => {
             }
         }
 
-        
+
 
         /**
          * Renders the chart using the provided data and metadata.
@@ -124,7 +124,16 @@ var parseMetadata = metadata => {
             console.log('dataBinding:', dataBinding);
             const { data, metadata } = dataBinding;
             const { dimensions, measures } = parseMetadata(metadata);
-            const [dimension] = dimensions;
+
+            if (dimensions.length === 0 || measures.length === 0) {
+                if (this._chart) {
+                    this._chart.destroy();
+                    this._chart = null;
+                }
+                return;
+            }
+
+            const [dimension1, dimension2] = dimensions;
             const [measure] = measures;
             const nodes = [];
             const links = [];
@@ -140,28 +149,44 @@ var parseMetadata = metadata => {
             const scaleFormat = (value) => this._scaleFormat(value);
             const subtitleText = this._updateSubtitle();
 
-            if (dimensions.length === 0 || measures.length === 0) {
-                if (this._chart) {
-                    this._chart.destroy();
-                    this._chart = null;
-                }
-                return;
-            }
+
 
             data.forEach(row => {
-                const { label, id, parentId } = row[dimension.key];
+                const { label1, id, parentId } = row[dimension1.key];
                 const { raw } = row[measure.key];
-                nodes.push({ name: label });
 
-                const rowParent = data.find(d => {
-                    const { id } = d[dimension.key];
-                    return id === parentId;
-                });
-                if (rowParent) {
-                    const { label: parentLabel } = rowParent[dimension.key];
+                // Add the first dimension's label as a node
+                if (!nodes.some(node => node.name === label1)) {
+                    nodes.push({ name: label1 });
+                }
+
+                if (parentId) {
+                    // Hierarchical logic
+                    const rowParent = data.find(d => {
+                        const { id } = d[dimension1.key];
+                        return id === parentId;
+                    });
+                    if (rowParent) {
+                        const { label: parentLabel } = rowParent[dimension1.key];
+                        links.push({
+                            from: parentLabel,
+                            to: label1,
+                            value: raw
+                        });
+                    }
+                } else if (dimension2) {
+                    // Non-hierarchical logic
+                    const { label: label2 } = row[dimension2.key];
+
+                    // Add the second dimension's label as a node
+                    if (!nodes.some(node => node.name === label2)) {
+                        nodes.push({ name: label2 });
+                    }
+
+                    // Create a link between the two dimensions
                     links.push({
-                        from: parentLabel,
-                        to: label,
+                        from: label1,
+                        to: label2,
                         value: raw
                     });
                 }
