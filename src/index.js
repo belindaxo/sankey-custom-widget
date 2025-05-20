@@ -142,7 +142,8 @@ var parseMetadata = metadata => {
             console.log('metadata:', metadata);
             console.log('dimensions:', dimensions);
             console.log('measures:', measures);
-            console.log('dimension:', dimension);
+            console.log('dimension1:', dimension1);
+            console.log('dimension2:', dimension2);
             console.log('measure:', measure);
 
 
