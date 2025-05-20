@@ -133,7 +133,7 @@ var parseMetadata = metadata => {
                 return;
             }
 
-            const [dimension1, dimension2] = dimensions;
+            const [dimension] = dimensions;
             const [measure] = measures;
             const nodes = [];
             const links = [];
@@ -142,8 +142,7 @@ var parseMetadata = metadata => {
             console.log('metadata:', metadata);
             console.log('dimensions:', dimensions);
             console.log('measures:', measures);
-            console.log('dimension1:', dimension1);
-            console.log('dimension2:', dimension2);
+            console.log('dimension:', dimension)
             console.log('measure:', measure);
 
 
@@ -153,41 +152,19 @@ var parseMetadata = metadata => {
 
 
             data.forEach(row => {
-                const { label1, id, parentId } = row[dimension1.key];
+                const { label, id, parentId } = row[dimension.key];
                 const { raw } = row[measure.key];
+                nodes.push({ name: label });
 
-                // Add the first dimension's label as a node
-                if (!nodes.some(node => node.name === label1)) {
-                    nodes.push({ name: label1 });
-                }
-
-                if (parentId) {
-                    // Hierarchical logic
-                    const rowParent = data.find(d => {
-                        const { id } = d[dimension1.key];
-                        return id === parentId;
-                    });
-                    if (rowParent) {
-                        const { label: parentLabel } = rowParent[dimension1.key];
-                        links.push({
-                            from: parentLabel,
-                            to: label1,
-                            value: raw
-                        });
-                    }
-                } else if (dimension2) {
-                    // Non-hierarchical logic
-                    const { label: label2 } = row[dimension2.key];
-
-                    // Add the second dimension's label as a node
-                    if (!nodes.some(node => node.name === label2)) {
-                        nodes.push({ name: label2 });
-                    }
-
-                    // Create a link between the two dimensions
+                const rowParent = data.find(d => {
+                    const { id } = d[dimension.key];
+                    return id === parentId;
+                });
+                if (rowParent) {
+                    const { label: parentLabel } = rowParent[dimension.key];
                     links.push({
-                        from: label1,
-                        to: label2,
+                        from: parentLabel,
+                        to: label,
                         value: raw
                     });
                 }
