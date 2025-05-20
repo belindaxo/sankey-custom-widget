@@ -83,6 +83,18 @@ var parseMetadata = metadata => {
         }
 
         /**
+         * Specifies which attributes should trigger re-rendering on change.
+         * @returns {string[]} An array of observed attribute names.
+         */
+        static get observedAttributes() {
+            return [
+                'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
+                'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
+                'scaleFormat', 'decimalPlaces'                                                              // Number formatting properties
+            ];
+        }
+
+        /**
         * Called when an observed attribute changes.
         * @param {string} name - The name of the changed attribute.
         * @param {string} oldValue - The old value of the attribute.
@@ -94,6 +106,8 @@ var parseMetadata = metadata => {
                 this._renderChart();
             }
         }
+
+        
 
         /**
          * Renders the chart using the provided data and metadata.
@@ -121,6 +135,10 @@ var parseMetadata = metadata => {
             console.log('measures:', measures);
             console.log('dimension:', dimension);
             console.log('measure:', measure);
+
+
+            const scaleFormat = (value) => this._scaleFormat(value);
+            const subtitleText = this._updateSubtitle();
 
             if (dimensions.length === 0 || measures.length === 0) {
                 if (this._chart) {
@@ -159,6 +177,29 @@ var parseMetadata = metadata => {
                         fontFamily: "'72', sans-serif"
                     },
                 },
+                title: {
+                    text: this.chartTitle || "",
+                    align: this.titleAlignment || "left",
+                    style: {
+                        fontSize: this.titleSize || "20px",
+                        fontWeight: this.titleFontStyle || "bold",
+                        color: this.titleColor || "#333333",
+                    },
+                },
+                subtitle: {
+                    text: subtitleText,
+                    align: this.subtitleAlignment || "left",
+                    style: {
+                        fontSize: this.subtitleSize || "12px",
+                        fontStyle: this.subtitleFontStyle || "normal",
+                        color: this.subtitleColor || "#666666",
+                    },
+                },
+                tooltip: {
+                    headerFormat: null,
+                    pointFormatter: this._formatTooltipPoint(scaleFormat),
+                    nodeFormatter: this._formatTooltipNode(scaleFormat),
+                },
                 series: [{
                     keys: ['from', 'to', 'weight'],
                     nodes: nodes,
@@ -167,6 +208,103 @@ var parseMetadata = metadata => {
                 }]
             };
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
+        }
+
+        /**
+         * 
+         * @param {Function} scaleFormat - A function to scale and format the value.
+         * @returns {Function} A function that formats the tooltip for the point.
+         */
+        _formatTooltipPoint(scaleFormat) {
+            return function () {
+                console.log(this);
+                if (this.point) {
+                    const { scaledValue, valueSuffix } = scaleFormat(this.point.weight);
+                    const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
+                    const valueWithSuffix = `${value} ${valueSuffix}`;
+                    const fromNodeName = this.point.fromNode.name;
+                    const toNodeName = this.point.toNode.name;
+                    return `
+                        ${fromNodeName} \u2192 ${toNodeName}: ${valueWithSuffix}
+                    `;
+                } else {
+                    return 'Error with data';
+                }
+            }
+        }
+
+        /**
+         * 
+         * @param {Function} scaleFormat - A function to scale and format the value.
+         * @returns {Function} A function that formats the tooltip for the node.
+         */
+        _formatTooltipNode(scaleFormat) {
+            return function () {
+                if (this.point) {
+                    const { scaledValue, valueSuffix } = scaleFormat(this.point.sum);
+                    const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
+                    const valueWithSuffix = `${value} ${valueSuffix}`;
+                    const name = this.point.name;
+                    return `
+                        ${name}: ${valueWithSuffix}
+                    `;
+                } else {
+                    return 'Error with data';
+                }
+            }
+        }
+
+        /**
+         * Determines subtitle text based on scale format or user input.
+         * @returns {string} The subtitle text.
+         */
+        _updateSubtitle() {
+            if (!this.chartSubtitle || this.chartSubtitle.trim() === '') {
+                let subtitleText = '';
+                switch (this.scaleFormat) {
+                    case 'k':
+                        subtitleText = 'in k';
+                        break;
+                    case 'm':
+                        subtitleText = 'in m';
+                        break;
+                    case 'b':
+                        subtitleText = 'in b';
+                        break;
+                    default:
+                        subtitleText = '';
+                        break;
+                }
+                return subtitleText;
+            } else {
+                return this.chartSubtitle;
+            }
+        }
+
+        _scaleFormat(value) {
+            let scaledValue = value;
+            let valueSuffix = '';
+
+            switch (this.scaleFormat) {
+                case 'k':
+                    scaledValue = value / 1000;
+                    valueSuffix = 'k';
+                    break;
+                case 'm':
+                    scaledValue = value / 1000000;
+                    valueSuffix = 'm';
+                    break;
+                case 'b':
+                    scaledValue = value / 1000000000;
+                    valueSuffix = 'b';
+                    break;
+                default:
+                    break;
+            }
+            return {
+                scaledValue: scaledValue.toFixed(this.decimalPlaces),
+                valueSuffix
+            };
         }
     }
     customElements.define('com-sap-sample-sankey', Sankey);

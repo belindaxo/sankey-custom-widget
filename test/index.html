@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Highcharts Test</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/sankey.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
@@ -46,15 +47,187 @@
 
             _renderChart() {
                 const container = this.shadowRoot.querySelector('#container');
+                const colors = ['#8b9090', '#f34646', '#6cc073'];
+                const nodes = [
+                    {
+                        name: 'Product Revenue',
+                        colorIndex: 0
+                    },
+                    {
+                        name: 'Order Revenue',
+                        colorIndex: 0
+                    },
+                    {
+                        name: 'Service Revenue',
+                        colorIndex: 0
+                    },
+                    {
+                        name: 'Project Revenue',
+                        colorIndex: 0
+                    },
+                    {
+                        name: 'Order COGS',
+                        colorIndex: 1
+                    },
+                    {
+                        name: 'Other Revenue',
+                        colorIndex: 0
+                    },
+                    {
+                        name: 'COGS',
+                        colorIndex: 1
+                    },
+                    {
+                        name: 'Revenue',
+                        colorIndex: 0
+                    },
+                    {
+                        name: 'Total SG&A Expenses',
+                        colorIndex: 1
+                    },
+                    {
+                        name: 'Order Margin',
+                        colorIndex: 2
+                    },
+                    {
+                        name: 'Profit Contribution',
+                        colorIndex: 2
+                    },
+                    {
+                        name: 'Other COGS',
+                        colorIndex: 1
+                    },
+                    {
+                        name: 'Product COGS',
+                        colorIndex: 1
+                    },
+                    {
+                        name: 'Service COGS',
+                        colorIndex: 1
+                    },
+                    {
+                        name: 'Project COGS',
+                        colorIndex: 1
+                    }
+                ]
+
+                const links = [
+                    {
+                        from: 'Product Revenue',
+                        to: 'Order Revenue',
+                        weight: 279,
+                        color: colors[0]
+                    },
+                    {
+                        from: 'Service Revenue',
+                        to: 'Order Revenue',
+                        weight: 35,
+                        color: colors[0]
+                    },
+                    {
+                        from: 'Project Revenue',
+                        to: 'Order Revenue',
+                        weight: 71,
+                        color: colors[0]
+                    },
+                    {
+                        from: 'Order Revenue',
+                        to: 'Revenue',
+                        weight: 385,
+                        color: colors[0]
+                    },
+                    {
+                        from: 'Revenue',
+                        to: 'COGS',
+                        weight: 258,
+                        color: colors[1]
+                    },
+                    {
+                        from: 'Other Revenue',
+                        to: 'Revenue',
+                        weight: 5,
+                        color: colors[0]
+                    },
+                    {
+                        from: 'COGS',
+                        to: 'Other COGS',
+                        weight: 16,
+                        color: colors[1]
+                    },
+                    {
+                        from: 'COGS',
+                        to: 'Order COGS',
+                        weight: 242,
+                        color: colors[1]
+                    },
+                    {
+                        from: 'Order COGS',
+                        to: "Product COGS",
+                        weight: 178,
+                        color: colors[1]
+                    },
+                    {
+                        from: 'Order COGS',
+                        to: 'Service COGS',
+                        weight: 21,
+                        color: colors[1]
+                    },
+                    {
+                        from: 'Order COGS',
+                        to: 'Project COGS',
+                        weight: 43,
+                        color: colors[1]
+                    },
+                    {
+                        from: 'Revenue',
+                        to: 'Order Margin',
+                        weight: 127,
+                        color: colors[2]
+                    },
+                    {
+                        from: 'Order Margin',
+                        to: 'Profit Contribution',
+                        weight: 79,
+                        color: colors[2]
+                    },
+                    {
+                        from: 'Order Margin',
+                        to: 'Total SG&A Expenses',
+                        weight: 49,
+                        color: colors[1]
+                    }
+                ]
+
+                console.log('nodes', nodes);
+                console.log('links', links);
+                const data = links.map(link => [link.color, link.from, link.to, link.weight]);
+                const formattedNodes = nodes.map(node => ({
+                    id: node.name,
+                    color: colors[node.colorIndex],
+                    name: node.name
+                }));
+                console.log('data', data);
+                console.log('formattedNodes', formattedNodes);
                 
                 Highcharts.chart(container, {
-
+                    chart: {
+                    type: 'sankey',
+                    },
+                    series: [{
+                        keys: ['color', 'from', 'to', 'weight'],
+                        nodes: formattedNodes,
+                        data: data,
+                        type: 'sankey',
+                        colorByNode: false,
+                        
+                    }]
                 });
             }
         }
         customElements.define('my-custom-element', MyCustomElement);
     </script>
     <my-custom-element></my-custom-element>
+    <span>I am not in the shadow DOM</span>
 </body>
     <form id="form">
         <legend style="font-weight: bold;font-size: 18px;"> Font </legend>
