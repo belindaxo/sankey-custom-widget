@@ -91,6 +91,11 @@
             "type": "integer",
             "description": "The number of decimal places to display",
             "default": 2
+        },
+        "isInverted": {
+            "type": "boolean",
+            "description": "Whether the chart is inverted",
+            "default": false
         }
     },
     "methods": {

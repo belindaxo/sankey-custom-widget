@@ -137,6 +137,15 @@
                 </td>
             </tr>
         </table>
+        <legend style="font-weight: bold; font-size: 18px;">Sankey Chart Properties</legend>
+        <table>
+            <tr>
+                <td>
+                    <input id="isInverted" type="checkbox">
+                    <label for="isInverted">Invert chart</label>
+                </td>
+            </tr>
+        </table>
         <input type="submit" style="display:none;">
         </form>
     `;
@@ -164,6 +173,7 @@
             this._shadowRoot.getElementById('subtitleColor').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('scaleFormat').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('decimalPlaces').addEventListener('change', this._submit.bind(this));
+            this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
         }
         
         /**
@@ -187,109 +197,120 @@
                         subtitleColor: this.subtitleColor,
                         scaleFormat: this.scaleFormat,
                         decimalPlaces: this.decimalPlaces,
+                        isInverted: this.isInverted
                     }
                 }
             }));
         }
 
         // Getters and setters for each property
-        
-        set chartTitle(value) {
-            this._shadowRoot.getElementById('chartTitle').value = value;
-        }
 
+        // Font properties
         get chartTitle() {
             return this._shadowRoot.getElementById('chartTitle').value;
         }
-
-        set titleSize(value) {
-            this._shadowRoot.getElementById('titleSize').value = value;
+        
+        set chartTitle(value) {
+            this._shadowRoot.getElementById('chartTitle').value = value;
         }
 
         get titleSize() {
             return this._shadowRoot.getElementById('titleSize').value;
         }
 
-        set titleFontStyle(value) {
-            this._shadowRoot.getElementById('titleFontStyle').value = value;
+        set titleSize(value) {
+            this._shadowRoot.getElementById('titleSize').value = value;
         }
 
         get titleFontStyle() {
             return this._shadowRoot.getElementById('titleFontStyle').value;
         }
 
-        set titleAlignment(value) {
-            this._shadowRoot.getElementById('titleAlignment').value = value;
+        set titleFontStyle(value) {
+            this._shadowRoot.getElementById('titleFontStyle').value = value;
         }
 
         get titleAlignment() {
             return this._shadowRoot.getElementById('titleAlignment').value;
         }
 
-        set titleColor(value) {
-            this._shadowRoot.getElementById('titleColor').value = value;
+        set titleAlignment(value) {
+            this._shadowRoot.getElementById('titleAlignment').value = value;
         }
 
         get titleColor() {
             return this._shadowRoot.getElementById('titleColor').value;
         }
 
-        set chartSubtitle(value) {
-            this._shadowRoot.getElementById('chartSubtitle').value = value;
+        set titleColor(value) {
+            this._shadowRoot.getElementById('titleColor').value = value;
         }
 
         get chartSubtitle() {
             return this._shadowRoot.getElementById('chartSubtitle').value;
         }
 
-        set subtitleSize(value) {
-            this._shadowRoot.getElementById('subtitleSize').value = value;
+        set chartSubtitle(value) {
+            this._shadowRoot.getElementById('chartSubtitle').value = value;
         }
 
         get subtitleSize() {
             return this._shadowRoot.getElementById('subtitleSize').value;
         }
 
-        set subtitleFontStyle(value) {
-            this._shadowRoot.getElementById('subtitleFontStyle').value = value;
+        set subtitleSize(value) {
+            this._shadowRoot.getElementById('subtitleSize').value = value;
         }
 
         get subtitleFontStyle() {
             return this._shadowRoot.getElementById('subtitleFontStyle').value;
         }
 
-        set subtitleAlignment(value) {
-            this._shadowRoot.getElementById('subtitleAlignment').value = value;
+        set subtitleFontStyle(value) {
+            this._shadowRoot.getElementById('subtitleFontStyle').value = value;
         }
 
         get subtitleAlignment() {
             return this._shadowRoot.getElementById('subtitleAlignment').value;
         }
 
-        set subtitleColor(value) {
-            this._shadowRoot.getElementById('subtitleColor').value = value;
+        set subtitleAlignment(value) {
+            this._shadowRoot.getElementById('subtitleAlignment').value = value;
         }
 
         get subtitleColor() {
             return this._shadowRoot.getElementById('subtitleColor').value;
         }
 
+        set subtitleColor(value) {
+            this._shadowRoot.getElementById('subtitleColor').value = value;
+        }
+
+        // Number formatting properties
+        get scaleFormat() {
+            return this._shadowRoot.getElementById('scaleFormat').value;
+        }
+
         set scaleFormat(value) {
             this._shadowRoot.getElementById('scaleFormat').value = value;
         }
 
-        get scaleFormat() {
-            return this._shadowRoot.getElementById('scaleFormat').value;
+        get decimalPlaces() {
+            return this._shadowRoot.getElementById('decimalPlaces').value;
         }
 
         set decimalPlaces(value) {
             this._shadowRoot.getElementById('decimalPlaces').value = value;
         }
 
-        get decimalPlaces() {
-            return this._shadowRoot.getElementById('decimalPlaces').value;
+        // Sankey chart properties
+        get isInverted() {
+            return this._shadowRoot.getElementById('isInverted').checked;
         }
- 
+
+        set isInverted(value) {
+            this._shadowRoot.getElementById('isInverted').checked = value;
+        }
 
     }
 

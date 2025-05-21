@@ -90,7 +90,8 @@ var parseMetadata = metadata => {
             return [
                 'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
-                'scaleFormat', 'decimalPlaces'                                                              // Number formatting properties
+                'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
+                'isInverted'                                                                                // Sankey chart properties
             ];
         }
 
@@ -179,6 +180,7 @@ var parseMetadata = metadata => {
                     style: {
                         fontFamily: "'72', sans-serif"
                     },
+                    inverted: this.isInverted || false
                 },
                 title: {
                     text: this.chartTitle || "",
