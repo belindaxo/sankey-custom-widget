@@ -320,19 +320,11 @@ var parseMetadata = metadata => {
         // SAC scripting methods
 
         getNodes() {
-            const nodeMap = {};
-            this.nodes.forEach((node, i) => {
-                nodeMap[i.toString()] = node;
-            });
-            return nodeMap;
+            return this.nodes;
         }
 
         getLinks() {
-            const linkMap = {};
-            this.links.forEach((link, i) => {
-                linkMap[i.toString()] = link;
-            });
-            return linkMap;
+            return this.links;
         }
     }
     customElements.define('com-sap-sample-sankey', Sankey);

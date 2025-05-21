@@ -101,11 +101,11 @@
     "methods": {
         "getNodes": {
             "description": "Returns the nodes array of the chart instance.",
-            "returnType": "Object<Node>"
+            "returnType": "Node[]"
         },
         "getLinks": {
             "description": "Returns the links array of the chart instance.",
-            "returnType": "Object<Link>"
+            "returnType": "Link[]"
         }
     },
     "events": {
