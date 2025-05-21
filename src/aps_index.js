@@ -145,6 +145,17 @@
                     <label for="isInverted">Invert chart</label>
                 </td>
             </tr>
+            <tr>
+                <td>Link Color Mode</td>
+            </tr>
+            <tr>
+                <td>
+                    <select id="linkColorMode">    
+                        <option value="from" selected>From</option>
+                        <option value="to">To</option>
+                        <option value="gradient">Gradient</option>
+                </td>
+            </tr>
         </table>
         <input type="submit" style="display:none;">
         </form>
@@ -174,6 +185,7 @@
             this._shadowRoot.getElementById('scaleFormat').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('decimalPlaces').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
+            this._shadowRoot.getElementById('linkColorMode').addEventListener('change', this._submit.bind(this));
         }
         
         /**
@@ -197,7 +209,8 @@
                         subtitleColor: this.subtitleColor,
                         scaleFormat: this.scaleFormat,
                         decimalPlaces: this.decimalPlaces,
-                        isInverted: this.isInverted
+                        isInverted: this.isInverted,
+                        linkColorMode: this.linkColorMode
                     }
                 }
             }));
@@ -312,7 +325,13 @@
             this._shadowRoot.getElementById('isInverted').checked = value;
         }
 
-    }
+        get linkColorMode() {
+            return this._shadowRoot.getElementById('linkColorMode').value;
+        }
 
+        set linkColorMode(value) {
+            this._shadowRoot.getElementById('linkColorMode').value = value;
+        }
+    }
     customElements.define('com-sap-sample-sankey-aps', Sankey);
 })();

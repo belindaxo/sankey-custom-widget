@@ -96,6 +96,11 @@
             "type": "boolean",
             "description": "Whether the chart is inverted",
             "default": false
+        },
+        "linkColorMode": {
+            "type": "string",
+            "description": "The color mode of the links (from, to, gradient)",
+            "default": "from"
         }
     },
     "methods": {

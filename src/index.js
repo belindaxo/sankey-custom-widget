@@ -94,7 +94,7 @@ var parseMetadata = metadata => {
                 'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
-                'isInverted'                                                                                // Sankey chart properties
+                'isInverted', "linkColorMode"                                                               // Sankey chart properties
             ];
         }
 
@@ -228,7 +228,8 @@ var parseMetadata = metadata => {
                     keys: ['from', 'to', 'weight'],
                     nodes: formattedNodes,
                     data: formattedData,
-                    type: 'sankey'
+                    type: 'sankey',
+                    linkColorMode: this.linkColorMode || 'from',
                 }]
             };
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
