@@ -341,6 +341,12 @@ var parseMetadata = metadata => {
         getLinks() {
             return this.links;
         }
+
+        setNodeColor(nodeName, color) {
+            this.nodes = this.nodes.map(node =>
+                node.name === nodeName ? { ...node, color } : node
+            );
+        }
     }
     customElements.define('com-sap-sample-sankey', Sankey);
 })();
