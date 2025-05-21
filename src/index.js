@@ -184,8 +184,7 @@ var parseMetadata = metadata => {
             const formattedData = this.links.map(link => ({
                 from: link.from,
                 to: link.to,
-                value: link.value,
-                ...(link.color && { color: link.color }), // Only include color if it exists
+                weight: link.value,
             }));
 
             console.log('formattedNodes:', formattedNodes);
@@ -226,7 +225,7 @@ var parseMetadata = metadata => {
                     nodeFormatter: this._formatTooltipNode(scaleFormat),
                 },
                 series: [{
-                    keys: ['from', 'to', 'weight', 'color'],
+                    keys: ['from', 'to', 'weight'],
                     nodes: formattedNodes,
                     data: formattedData,
                     type: 'sankey'

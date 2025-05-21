@@ -206,8 +206,7 @@
                 const data = this.links.map(link => ({
                     from: link.from,
                     to: link.to,
-                    weight: link.weight,
-                    color: link.color
+                    weight: link.weight
                 }));
                 const formattedNodes = this.nodes.map(node => ({
                     id: node.name,
@@ -226,12 +225,12 @@
                         headerFormat: null
                     },
                     series: [{
-                        keys: ['color', 'from', 'to', 'weight'],
+                        keys: ['from', 'to', 'weight'],
                         nodes: formattedNodes,
                         data: data,
                         type: 'sankey',
                         colorByNode: false,
-                        
+                        linkColorMode: 'to'
                     }]
                 });
             }
