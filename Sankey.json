@@ -100,14 +100,44 @@
     },
     "methods": {
         "getNodes": {
-            "description": "Returns the nodes array of the chart instance."
+            "description": "Returns the nodes array of the chart instance.",
+            "returnType": "Object<Node>"
         },
         "getLinks": {
-            "description": "Returns the links array of the chart instance."
+            "description": "Returns the links array of the chart instance.",
+            "returnType": "Object<Link>"
         }
     },
     "events": {
 
+    },
+    "types": {
+        "Node": {
+            "description": "Represents a node in the Sankey chart.",
+            "properties": [
+                {
+                    "name": "name", 
+                    "type": "string"
+                }
+            ]
+        },
+        "Link": {
+            "description": "Represents a link in the Sankey chart.",
+            "properties": [
+                {
+                    "name": "from", 
+                    "type": "string"
+                },
+                {
+                    "name": "to", 
+                    "type": "string"
+                },
+                {
+                    "name": "value", 
+                    "type": "number"
+                }
+            ]
+        }
     },
     "dataBindings": {
         "dataBinding": {
