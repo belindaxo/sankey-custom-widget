@@ -176,6 +176,21 @@ var parseMetadata = metadata => {
                 }
             });
 
+            const formattedNodes = this.nodes.map(node => ({
+                id: node.name,
+                name: node.name,
+                ...(node.color && { color: node.color }), // Only include color if it exists
+            }));
+            const formattedData = this.links.map(link => ({
+                from: link.from,
+                to: link.to,
+                value: link.value,
+                ...(link.color && { color: link.color }), // Only include color if it exists
+            }));
+
+            console.log('formattedNodes:', formattedNodes);
+            console.log('formattedData:', formattedData);
+
             console.log('nodes:', this.nodes);
             console.log('links:', this.links);
 
@@ -211,9 +226,9 @@ var parseMetadata = metadata => {
                     nodeFormatter: this._formatTooltipNode(scaleFormat),
                 },
                 series: [{
-                    keys: ['from', 'to', 'weight'],
-                    nodes: this.nodes,
-                    data: this.links.map(link => [link.from, link.to, link.value]),
+                    keys: ['from', 'to', 'weight', 'color'],
+                    nodes: formattedNodes,
+                    data: formattedData,
                     type: 'sankey'
                 }]
             };

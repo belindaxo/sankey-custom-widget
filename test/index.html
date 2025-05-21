@@ -203,10 +203,15 @@
 
                 console.log('nodes', this.nodes);
                 console.log('links', this.links);
-                const data = this.links.map(link => [link.color, link.from, link.to, link.weight]);
+                const data = this.links.map(link => ({
+                    from: link.from,
+                    to: link.to,
+                    weight: link.weight,
+                    color: link.color
+                }));
                 const formattedNodes = this.nodes.map(node => ({
                     id: node.name,
-                    color: colors[node.colorIndex],
+                    color: colors[node.colorIndex] || undefined,
                     name: node.name
                 }));
                 console.log('data', data);
