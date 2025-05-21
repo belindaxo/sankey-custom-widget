@@ -99,7 +99,12 @@
         }
     },
     "methods": {
-
+        "getNodes": {
+            "description": "Returns the nodes array of the chart instance."
+        },
+        "getLinks": {
+            "description": "Returns the links array of the chart instance."
+        }
     },
     "events": {
 

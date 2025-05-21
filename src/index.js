@@ -32,6 +32,9 @@ var parseMetadata = metadata => {
             super();
             this.attachShadow({ mode: 'open' });
 
+            this.nodes = [];
+            this.links = [];
+
             // Create a CSSStyleSheet for the shadow DOM
             const sheet = new CSSStyleSheet();
             sheet.replaceSync(`
@@ -136,8 +139,10 @@ var parseMetadata = metadata => {
 
             const [dimension] = dimensions;
             const [measure] = measures;
-            const nodes = [];
-            const links = [];
+            
+            // Reset nodes and links
+            this.nodes = [];
+            this.links = [];
 
             console.log('data:', data);
             console.log('metadata:', metadata);
@@ -155,7 +160,7 @@ var parseMetadata = metadata => {
             data.forEach(row => {
                 const { label, id, parentId } = row[dimension.key];
                 const { raw } = row[measure.key];
-                nodes.push({ name: label });
+                this.nodes.push({ name: label });
 
                 const rowParent = data.find(d => {
                     const { id } = d[dimension.key];
@@ -163,7 +168,7 @@ var parseMetadata = metadata => {
                 });
                 if (rowParent) {
                     const { label: parentLabel } = rowParent[dimension.key];
-                    links.push({
+                    this.links.push({
                         from: parentLabel,
                         to: label,
                         value: raw
@@ -171,8 +176,8 @@ var parseMetadata = metadata => {
                 }
             });
 
-            console.log('nodes:', nodes);
-            console.log('links:', links);
+            console.log('nodes:', this.nodes);
+            console.log('links:', this.links);
 
             const chartOptions = {
                 chart: {
@@ -207,8 +212,8 @@ var parseMetadata = metadata => {
                 },
                 series: [{
                     keys: ['from', 'to', 'weight'],
-                    nodes: nodes,
-                    data: links.map(link => [link.from, link.to, link.value]),
+                    nodes: this.nodes,
+                    data: this.links.map(link => [link.from, link.to, link.value]),
                     type: 'sankey'
                 }]
             };
@@ -310,6 +315,24 @@ var parseMetadata = metadata => {
                 scaledValue: scaledValue.toFixed(this.decimalPlaces),
                 valueSuffix
             };
+        }
+
+        // SAC scripting methods
+        /**
+         * Returns the nodes array.
+         * @returns {Array} The nodes array.
+         */
+        getNodes() {
+            return this.nodes;
+        }
+
+        /**
+         * Returns the links array.
+         * @returns {Array} The links array.
+
+         */
+        getLinks() {
+            return this.links;
         }
     }
     customElements.define('com-sap-sample-sankey', Sankey);

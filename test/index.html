@@ -17,6 +17,9 @@
             constructor() {
                 super();
                 this.attachShadow({ mode: 'open'});
+                
+                this.nodes = [];
+                this.links = [];
                     
                 const sheet = new CSSStyleSheet();
                 sheet.replaceSync(`
@@ -48,7 +51,7 @@
             _renderChart() {
                 const container = this.shadowRoot.querySelector('#container');
                 const colors = ['#8b9090', '#f34646', '#6cc073'];
-                const nodes = [
+                this.nodes = [
                     {
                         name: 'Product Revenue',
                         colorIndex: 0
@@ -111,7 +114,7 @@
                     }
                 ]
 
-                const links = [
+                this.links = [
                     {
                         from: 'Product Revenue',
                         to: 'Order Revenue',
@@ -198,10 +201,10 @@
                     }
                 ]
 
-                console.log('nodes', nodes);
-                console.log('links', links);
-                const data = links.map(link => [link.color, link.from, link.to, link.weight]);
-                const formattedNodes = nodes.map(node => ({
+                console.log('nodes', this.nodes);
+                console.log('links', this.links);
+                const data = this.links.map(link => [link.color, link.from, link.to, link.weight]);
+                const formattedNodes = this.nodes.map(node => ({
                     id: node.name,
                     color: colors[node.colorIndex],
                     name: node.name
