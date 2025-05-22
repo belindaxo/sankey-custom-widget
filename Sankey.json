@@ -111,21 +111,6 @@
         "getLinks": {
             "description": "Returns the links array of the chart instance.",
             "returnType": "Link[]"
-        },
-        "setNodeColor": {
-            "description": "Sets a node's color.",
-            "parameters": [
-                {
-                    "name": "nodeName",
-                    "type": "string",
-                    "description": "The name of the node (Node.name)"
-                },
-                {
-                    "name": "color",
-                    "type": "string",
-                    "description": "The new color to assign to the node"
-                }
-            ]
         }
     },
     "events": {
