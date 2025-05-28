@@ -1,9 +1,5 @@
-import Highcharts from 'highcharts';
-import SankeyChart from 'highcharts/modules/sankey';
-SankeyChart(Highcharts);
-
-console.log('Highcharts:', Highcharts);
-console.log('Sankey:', SankeyChart);
+import * as Highcharts from 'highcharts';
+import 'highcharts/modules/sankey';
 
 /**
  * Parses metadata into structured dimensions and measures.
