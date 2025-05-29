@@ -50,7 +50,7 @@
                             </select>
                         </td>
                         <td>
-                            <input id="titleColor" type="color" value="#333333">
+                            <input id="titleColor" type="color" value="#004B8D">
                         </td>
                     </tr>
                 </table>
@@ -75,7 +75,8 @@
                         <td>
                             <select id="subtitleSize">
                                 <option value="10px">10</option>
-                                <option value="12px" selected>12</option>
+                                <option value="11px" selected>11</option>
+                                <option value="12px">12</option>
                                 <option value="14px">14</option>
                                 <option value="16px">16</option>
                                 <option value="18px">18</option>
@@ -100,7 +101,7 @@
                             </select>
                         </td>
                         <td>
-                            <input id="subtitleColor" type="color" value="#666666">
+                            <input id="subtitleColor" type="color" value="#000000">
                         </td>
                     </tr>
                 </table>
@@ -157,6 +158,9 @@
                 </td>
             </tr>
         </table>
+        <tr>
+            <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
+        </tr>
         <input type="submit" style="display:none;">
         </form>
     `;
@@ -171,6 +175,24 @@
          */
         constructor() {
             super();
+
+            const DEFAULTS = {
+                chartTitle: '',
+                titleSize: '16px',
+                titleFontStyle: 'bold',
+                titleAlignment: 'left',
+                titleColor: '#004B8D',
+                chartSubtitle: '',
+                subtitleSize: '11px',
+                subtitleFontStyle: 'normal',
+                subtitleAlignment: 'left',
+                subtitleColor: '#000000',
+                scaleFormat: 'unformatted',
+                decimalPlaces: '2',
+                isInverted: false,
+                linkColorMode: 'from'
+            }
+
             this._shadowRoot = this.attachShadow({ mode: 'open' });
             this._shadowRoot.appendChild(template.content.cloneNode(true));
             this._shadowRoot.getElementById('form').addEventListener('submit', this._submit.bind(this));
@@ -186,6 +208,26 @@
             this._shadowRoot.getElementById('decimalPlaces').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('linkColorMode').addEventListener('change', this._submit.bind(this));
+
+            
+            // Reset button logic
+            this._shadowRoot.getElementById('resetDefaults').addEventListener('click', () => {
+                for (const key in DEFAULTS) {
+                    if (key === 'chartTitle' || key === 'chartSubtitle') {
+                        continue; // Skip these fields
+                    }
+
+                    const element = this._shadowRoot.getElementById(key);
+                    if (!element) continue; // Skip if element not found
+
+                    if (typeof DEFAULTS[key] === 'boolean') {
+                        element.checked = DEFAULTS[key];
+                    } else {
+                        element.value = DEFAULTS[key];
+                    }
+                }
+                this._submit(new Event('submit')); // Trigger submit event to update properties
+            });
         }
         
         /**
