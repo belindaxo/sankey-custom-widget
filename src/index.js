@@ -189,6 +189,13 @@ var parseMetadata = metadata => {
             console.log('nodes:', this.nodes);
             console.log('links:', this.links);
 
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                },
+                colors: ['#004b8d', '#47a5dc', '#faa834', '#00aa7e', '#006ac7', '#bf8028', '#00e4a7']
+            });
+
             const chartOptions = {
                 chart: {
                     type: 'sankey',
