@@ -272,7 +272,7 @@
             this._shadowRoot.getElementById('decimalPlaces').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('linkColorMode').addEventListener('change', this._submit.bind(this));
-            this._shadowRoot.getElementById('centerNode').addEventListener('input', this._submit.bind(this));
+            this._shadowRoot.getElementById('centerNode').addEventListener('change', this._submit.bind(this));
 
             // Reset button logic
             this._shadowRoot.getElementById('resetDefaults').addEventListener('click', () => {
