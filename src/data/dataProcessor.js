@@ -48,7 +48,7 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
 
     const links = Array.from(linkMap.values());
 
-    console.log("Center node:", centerNodeLabel);
+    console.log("Center node:", centerNode);
     console.log("Final links:", links);
 
     return { nodes, links };
