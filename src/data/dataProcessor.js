@@ -28,13 +28,6 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
 
     const centerDownstreamNodes = getDownstreamNodes(centerNode, manualLinks);
 
-    // Find nodes directly connected to the center node
-    manualLinks.forEach(link => {
-        if (link.from?.trim() === centerNode) {
-            centerTargets.add(link.to?.trim());
-        }
-    });
-
     manualLinks.forEach(link => {
         const from = link.from?.trim();
         const to = link.to?.trim();
