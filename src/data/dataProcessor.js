@@ -4,16 +4,29 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
         measureKeyMap[m.label] = m.key;
     });
 
+    const fromSet = new Set();
+    const toSet = new Set();
     const usedMeasureNames = new Set();
-    const addedFromNodes = new Set(); // prevent double counting 
+
+    // Step 1: Build from/to sets to determine center nodes
+    manualLinks.forEach(link => {
+        const from = link.from?.trim();
+        const to = link.to?.trim();
+        if (from) fromSet.add(from);
+        if (to) toSet.add(to);
+    });
+
+    const centerNodes = new Set([...fromSet].filter(name => toSet.has(name)));
+
     const linkMap = new Map();
+    const countedFromNodes = new Set();
 
     manualLinks.forEach(link => {
         const from = link.from?.trim();
         const to = link.to?.trim();
 
         if (!from || !to) {
-            console.log('invalid link detected, skipping:', link);
+            console.log("Invalid link detected, skipping:", link);
             return;
         }
 
@@ -21,22 +34,28 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
         const toKey = measureKeyMap[to];
 
         if (!fromKey || !toKey) {
-            console.log('invalid measure in link, skipping:', link);
+            console.log("Invalid measure in link, skipping:", link);
             return;
         }
 
-        let weight = 0;
-        if (!addedFromNodes.has(from)) {
-            const raw = data[0]?.[fromKey]?.raw;
-            if (typeof raw === 'number') {
-                weight = raw;
-                addedFromNodes.add(from);
-            } else {
-                console.log(`Invalid or missing raw value for ${from}`);
-                return;
-            }
+        // Determine weight
+        let weight;
+
+        const isCenter = centerNodes.has(from);
+        const hasBeenCounted = countedFromNodes.has(from);
+
+        if (isCenter && hasBeenCounted) {
+            // Center node has already been counted → switch to to node's value
+            weight = data[0]?.[toKey]?.raw;
         } else {
-            weight = 0; // If already added, weight is zero
+            // Otherwise, use from node's value and mark it counted
+            weight = data[0]?.[fromKey]?.raw;
+            if (isCenter) countedFromNodes.add(from);
+        }
+
+        if (typeof weight !== 'number') {
+            console.log("Invalid weight value for link:", link);
+            return;
         }
 
         const mapKey = `${from}-${to}`;
@@ -52,7 +71,9 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
     }));
 
     const links = Array.from(linkMap.values());
-    console.log("Final links (no duplicate weights):", links);
+
+    console.log("Center nodes:", [...centerNodes]);
+    console.log("Final links:", links);
 
     return { nodes, links };
 }
