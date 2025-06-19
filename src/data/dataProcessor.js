@@ -7,8 +7,27 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
     const usedMeasureNames = new Set();
     const linkMap = new Map();
 
-    const centerTargets = new Set();
-    
+    function getDownstreamNodes(start, links) {
+        const visited = new Set();
+        const queue = [start];
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+            visited.add(current);
+
+            links.forEach(link => {
+                if (link.from?.trim() === current && !visited.has(link.to?.trim())) {
+                    queue.push(link.to.trim());
+                }
+            });
+        }
+
+        visited.delete(start); // optional: exclude the center itself
+        return visited;
+    }
+
+    const centerDownstreamNodes = getDownstreamNodes(centerNode, manualLinks);
+
     // Find nodes directly connected to the center node
     manualLinks.forEach(link => {
         if (link.from?.trim() === centerNode) {
@@ -34,7 +53,9 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
         let weight;
         if (to === centerNode) {
             weight = data[0]?.[fromKey]?.raw;
-        } else if (from === centerNode || centerTargets.has(from)) {
+        } else if (from === centerNode) {
+            weight = data[0]?.[toKey]?.raw;
+        } else if (centerDownstreamNodes.has(from)) {
             weight = data[0]?.[toKey]?.raw;
         } else if (!centerNode) {
             weight = data[0]?.[fromKey]?.raw;
@@ -58,8 +79,9 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
     const links = Array.from(linkMap.values());
 
     console.log("Center node:", centerNode);
-    console.log("Center node targets:", [...centerTargets]);
+    console.log("Downstream of center:", [...centerDownstreamNodes]);
     console.log("Final links:", links);
 
     return { nodes, links };
 }
+
