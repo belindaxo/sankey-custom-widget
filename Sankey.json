@@ -102,6 +102,11 @@
             "description": "The color mode of the links (from, to, gradient)",
             "default": "from"
         },
+        "centerNode": {
+            "type": "string",
+            "description": "The name of the center node.",
+            "default": ""
+        },
         "manualLinks": {
             "type": "ManualLink[]",
             "description": "An array of user-defined links to be displayed in the chart.",

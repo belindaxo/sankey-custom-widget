@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,16 +12,17 @@
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
+
 <body>
     <script>
         class MyCustomElement extends HTMLElement {
             constructor() {
                 super();
-                this.attachShadow({ mode: 'open'});
-                
+                this.attachShadow({ mode: 'open' });
+
                 this.nodes = [];
                 this.links = [];
-                    
+
                 const sheet = new CSSStyleSheet();
                 sheet.replaceSync(`
                     #parent-container {
@@ -36,7 +38,7 @@
                         height: 100%;
                     }
                 `);
-                
+
                 this.shadowRoot.adoptedStyleSheets = [sheet];
 
                 this.shadowRoot.innerHTML = `
@@ -206,11 +208,11 @@
                 }));
                 console.log('data', data);
                 console.log('formattedNodes', formattedNodes);
-                
+
                 Highcharts.chart(container, {
                     chart: {
-                    type: 'sankey',
-                    inverted: false
+                        type: 'sankey',
+                        inverted: false
                     },
                     tooltip: {
                         headerFormat: null
@@ -376,7 +378,7 @@
             </tr>
             <tr>
                 <td>
-                    <select id="linkColorMode">    
+                    <select id="linkColorMode">
                         <option value="from" selected>From</option>
                         <option value="to">To</option>
                         <option value="gradient">Gradient</option>
@@ -384,27 +386,20 @@
             </tr>
         </table>
         <tr>
-            <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
+            <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to
+                Default</button>
         </tr>
-        <legend style="font-weight: bold; font-size: 18px;"> Link Definitions </legend>
-        <table id="linksTable" style="margin-bottom: 8px;">
-            <thead>
-                <th>From</th>
-                <th>To</th>
-            </thead>
-            <tbody id="linksBody">
-                <tr>
-                    <td>
-                        <input type="text">
-                    </td>
-                    <td>
-                        <input type="text">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button type="button" id="addLinkRow">+ Add Link</button>
+        <legend style="font-weight: bold; font-size: 18px;">Link Definitions</legend>
+        <tr>
+            <td>Center Node:</td>
+        </tr>
+        <tr>
+            <td><input id="centerNode" type="text" placeholder="e.g. Revenue" /></td>
+        </tr>
+        <div id="linksContainer" style="margin-bottom: 10px;"></div>
+        <button type="button" id="addLinkButton">+ Add Link</button>
         <input type="submit" style="display:none;">
     </form>
 </body>
+
 </html>

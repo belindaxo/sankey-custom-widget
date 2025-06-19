@@ -162,6 +162,12 @@
             <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
         </tr>
         <legend style="font-weight: bold; font-size: 18px;">Link Definitions</legend>
+        <tr>
+            <td>Center Node:</td>
+        </tr>
+        <tr>
+            <td><input id="centerNode" type="text" placeholder="e.g. Revenue" /></td>
+        </tr>
         <div id="linksContainer" style="margin-bottom: 10px;"></div>
         <button type="button" id="addLinkButton">+ Add Link</button>
         <input type="submit" style="display:none;">
@@ -266,6 +272,7 @@
             this._shadowRoot.getElementById('decimalPlaces').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('linkColorMode').addEventListener('change', this._submit.bind(this));
+            this._shadowRoot.getElementById('centerNode').addEventListener('input', this._submit.bind(this));
 
             // Reset button logic
             this._shadowRoot.getElementById('resetDefaults').addEventListener('click', () => {
@@ -313,6 +320,7 @@
                         decimalPlaces: this.decimalPlaces,
                         isInverted: this.isInverted,
                         linkColorMode: this.linkColorMode,
+                        centerNode: this.centerNode,
                         manualLinks: this.manualLinks
                     }
                 }
@@ -434,6 +442,14 @@
 
         set linkColorMode(value) {
             this._shadowRoot.getElementById('linkColorMode').value = value;
+        }
+
+        get centerNode() {
+            return this._shadowRoot.getElementById('centerNode').value;
+        }
+
+        set centerNode(value) {
+            this._shadowRoot.getElementById('centerNode').value = value;
         }
 
         get manualLinks() {

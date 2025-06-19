@@ -91,7 +91,7 @@ var parseMetadata = metadata => {
                 'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
-                'isInverted', "linkColorMode", "manualLinks"                                                // Sankey chart properties
+                'isInverted', "linkColorMode", "manualLinks", "centerNode"                                  // Sankey chart properties
             ];
         }
 
@@ -140,7 +140,7 @@ var parseMetadata = metadata => {
             const scaleFormat = (value) => this._scaleFormat(value);
             const subtitleText = this._updateSubtitle();
 
-            const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks || []);
+            const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
             this.nodes = nodes;
             this.links = links;
             console.log('Processed nodes:', nodes);
