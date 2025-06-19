@@ -1,5 +1,6 @@
 import * as Highcharts from 'highcharts';
 import 'highcharts/modules/sankey';
+import { processSankeyData } from './data/dataProcessor';
 
 /**
  * Parses metadata into structured dimensions and measures.
@@ -90,7 +91,7 @@ var parseMetadata = metadata => {
                 'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
-                'isInverted', "linkColorMode"                                                               // Sankey chart properties
+                'isInverted', "linkColorMode", "manualLinks"                                                // Sankey chart properties
             ];
         }
 
@@ -106,8 +107,6 @@ var parseMetadata = metadata => {
                 this._renderChart();
             }
         }
-
-
 
         /**
          * Renders the chart using the provided data and metadata.
@@ -133,61 +132,19 @@ var parseMetadata = metadata => {
                 return;
             }
 
-            const [dimension] = dimensions;
-            const [measure] = measures;
-            
-            // Reset nodes and links
-            this.nodes = [];
-            this.links = [];
-
             console.log('data:', data);
             console.log('metadata:', metadata);
             console.log('dimensions:', dimensions);
             console.log('measures:', measures);
-            console.log('dimension:', dimension)
-            console.log('measure:', measure);
-
 
             const scaleFormat = (value) => this._scaleFormat(value);
             const subtitleText = this._updateSubtitle();
 
-
-
-            data.forEach(row => {
-                const { label, id, parentId } = row[dimension.key];
-                const { raw } = row[measure.key];
-                this.nodes.push({ name: label });
-
-                const rowParent = data.find(d => {
-                    const { id } = d[dimension.key];
-                    return id === parentId;
-                });
-                if (rowParent) {
-                    const { label: parentLabel } = rowParent[dimension.key];
-                    this.links.push({
-                        from: parentLabel,
-                        to: label,
-                        value: raw
-                    });
-                }
-            });
-
-            const formattedNodes = this.nodes.map(node => ({
-                id: node.name,
-                name: node.name,
-                ...(node.color && { color: node.color }), // Only include color if it exists
-            }));
-            const formattedData = this.links.map(link => ({
-                from: link.from,
-                to: link.to,
-                weight: link.value,
-            }));
-
-            console.log('formattedNodes:', formattedNodes);
-            console.log('formattedData:', formattedData);
-
-            console.log('nodes:', this.nodes);
-            console.log('links:', this.links);
+            const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks || []);
+            this.nodes = nodes;
+            this.links = links;
+            console.log('Processed nodes:', nodes);
+            console.log('Processed links:', links);
 
             Highcharts.setOptions({
                 lang: {
@@ -232,8 +189,8 @@ var parseMetadata = metadata => {
                 },
                 series: [{
                     keys: ['from', 'to', 'weight'],
-                    nodes: formattedNodes,
-                    data: formattedData,
+                    nodes: nodes,
+                    data: links,
                     type: 'sankey',
                     linkColorMode: this.linkColorMode || 'from',
                 }]

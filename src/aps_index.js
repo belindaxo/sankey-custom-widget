@@ -161,6 +161,9 @@
         <tr>
             <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
         </tr>
+        <legend style="font-weight: bold; font-size: 18px;">Link Definitions</legend>
+        <div id="linksContainer" style="margin-bottom: 10px;"></div>
+        <button type="button" id="addLinkButton">+ Add Link</button>
         <input type="submit" style="display:none;">
         </form>
     `;
@@ -169,7 +172,7 @@
      * Custom Web Component for the Styling Panel (APS) of the Funnel3D widget.
      * @extends HTMLElement
      */
-    class Sankey extends HTMLElement {
+    class SankeyAps extends HTMLElement {
         /**
          * Initializes the shadow DOM and sets up event listeners for form inputs.
          */
@@ -195,6 +198,61 @@
 
             this._shadowRoot = this.attachShadow({ mode: 'open' });
             this._shadowRoot.appendChild(template.content.cloneNode(true));
+
+            this.manualLinks = [];
+
+            const linksContainer = this._shadowRoot.getElementById('linksContainer');
+            const addLinkButton = this._shadowRoot.getElementById('addLinkButton');
+
+            const renderLinksTable = () => {
+                linksContainer.innerHTML = '';
+                this.manualLinks.forEach((link, index) => {
+                    const row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.marginBottom = '6px';
+
+                    const fromInput = document.createElement('input');
+                    fromInput.type = 'text';
+                    fromInput.placeholder = 'From';
+                    fromInput.value = link.from || '';
+                    fromInput.style.marginRight = '6px';
+                    fromInput.addEventListener('input', () => {
+                        this.manualLinks[index].from = fromInput.value;
+                        this._submit(new Event('submit'));
+                    });
+
+                    const toInput = document.createElement('input');
+                    toInput.type = 'text';
+                    toInput.placeholder = 'To';
+                    toInput.value = link.to || '';
+                    toInput.style.marginRight = '6px';
+                    toInput.addEventListener('input', () => {
+                        this.manualLinks[index].to = toInput.value;
+                        this._submit(new Event('submit'));
+                    });
+
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = 'Remove';
+                    removeButton.type = 'button';
+                    removeButton.addEventListener('click', () => {
+                        this.manualLinks.splice(index, 1);
+                        renderLinksTable();
+                        this._submit(new Event('submit'));
+                    });
+
+                    row.appendChild(fromInput);
+                    row.appendChild(toInput);
+                    row.appendChild(removeButton);
+                    linksContainer.appendChild(row);
+                });
+            };
+
+            addLinkButton.addEventListener('click', () => {
+                this.manualLinks.push({ from: '', to: '' });
+                renderLinksTable();
+                this._submit(new Event('submit'));
+            });
+
             this._shadowRoot.getElementById('form').addEventListener('submit', this._submit.bind(this));
             this._shadowRoot.getElementById('titleSize').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('titleFontStyle').addEventListener('change', this._submit.bind(this));
@@ -209,7 +267,6 @@
             this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('linkColorMode').addEventListener('change', this._submit.bind(this));
 
-            
             // Reset button logic
             this._shadowRoot.getElementById('resetDefaults').addEventListener('click', () => {
                 for (const key in DEFAULTS) {
@@ -228,8 +285,11 @@
                 }
                 this._submit(new Event('submit')); // Trigger submit event to update properties
             });
+
+            this._renderLinksTable = renderLinksTable;
+            this._renderLinksTable();
         }
-        
+
         /**
          * Handles the form submissions and dispatches a 'propertiesChanged' event.
          * @param {Event} e - The form submission event.
@@ -252,7 +312,8 @@
                         scaleFormat: this.scaleFormat,
                         decimalPlaces: this.decimalPlaces,
                         isInverted: this.isInverted,
-                        linkColorMode: this.linkColorMode
+                        linkColorMode: this.linkColorMode,
+                        manualLinks: this.manualLinks
                     }
                 }
             }));
@@ -264,7 +325,7 @@
         get chartTitle() {
             return this._shadowRoot.getElementById('chartTitle').value;
         }
-        
+
         set chartTitle(value) {
             this._shadowRoot.getElementById('chartTitle').value = value;
         }
@@ -374,6 +435,18 @@
         set linkColorMode(value) {
             this._shadowRoot.getElementById('linkColorMode').value = value;
         }
+
+        get manualLinks() {
+            return this._manualLinks || [];
+        }
+
+        set manualLinks(value) {
+            this._manualLinks = value || [];
+            if (this._renderLinksTable) {
+                this._renderLinksTable();
+            }
+        }
+
     }
-    customElements.define('com-sap-sample-sankey-aps', Sankey);
+    customElements.define('com-sap-sample-sankey-aps', SankeyAps);
 })();

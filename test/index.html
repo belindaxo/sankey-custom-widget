@@ -275,7 +275,7 @@
                             </select>
                         </td>
                         <td>
-                            <input id="titleColor" type="color" value="#333333">
+                            <input id="titleColor" type="color" value="#004B8D">
                         </td>
                     </tr>
                 </table>
@@ -300,7 +300,8 @@
                         <td>
                             <select id="subtitleSize">
                                 <option value="10px">10</option>
-                                <option value="12px" selected>12</option>
+                                <option value="11px" selected>11</option>
+                                <option value="12px">12</option>
                                 <option value="14px">14</option>
                                 <option value="16px">16</option>
                                 <option value="18px">18</option>
@@ -325,7 +326,7 @@
                             </select>
                         </td>
                         <td>
-                            <input id="subtitleColor" type="color" value="#666666">
+                            <input id="subtitleColor" type="color" value="#000000">
                         </td>
                     </tr>
                 </table>
@@ -362,13 +363,13 @@
                 </td>
             </tr>
         </table>
-        <legend style="font-weight: bold; font-size: 18px;"> Sankey Chart Properties </legend>
+        <legend style="font-weight: bold; font-size: 18px;">Sankey Chart Properties</legend>
         <table>
             <tr>
                 <td>
-                    <input id="inverted" type="checkbox">
-                    <label for="inverted">Invert chart</label>
-                </td>  
+                    <input id="isInverted" type="checkbox">
+                    <label for="isInverted">Invert chart</label>
+                </td>
             </tr>
             <tr>
                 <td>Link Color Mode</td>
@@ -382,6 +383,27 @@
                 </td>
             </tr>
         </table>
+        <tr>
+            <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
+        </tr>
+        <legend style="font-weight: bold; font-size: 18px;"> Link Definitions </legend>
+        <table id="linksTable" style="margin-bottom: 8px;">
+            <thead>
+                <th>From</th>
+                <th>To</th>
+            </thead>
+            <tbody id="linksBody">
+                <tr>
+                    <td>
+                        <input type="text">
+                    </td>
+                    <td>
+                        <input type="text">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" id="addLinkRow">+ Add Link</button>
         <input type="submit" style="display:none;">
     </form>
 </body>
