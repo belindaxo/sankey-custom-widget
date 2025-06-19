@@ -222,6 +222,9 @@ var parseMetadata = metadata => {
                         color: this.subtitleColor || "#000000",
                     },
                 },
+                credits: {
+                    enabled: false
+                },
                 tooltip: {
                     headerFormat: null,
                     pointFormatter: this._formatTooltipPoint(scaleFormat),
