@@ -5,22 +5,7 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
     });
 
     const usedMeasureNames = new Set();
-    const fromSet = new Set();
-    const toSet = new Set();
-
-    // Step 1: Identify from/to usage
-    manualLinks.forEach(link => {
-        const from = link.from?.trim();
-        const to = link.to?.trim();
-        if (from) fromSet.add(from);
-        if (to) toSet.add(to);
-    });
-
-    // Step 2: Determine center nodes
-    const centerNodes = new Set(
-        [...fromSet].filter(name => toSet.has(name))
-    );
-
+    const addedFromNodes = new Set(); // prevent double counting 
     const linkMap = new Map();
 
     manualLinks.forEach(link => {
@@ -40,19 +25,18 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
             return;
         }
 
-        // Step 3: Determine weight based on center node logic
-        let weight;
-        if (centerNodes.has(from)) {
-            // Center node in 'from' position -> use 'to' value
-            weight = data[0]?.[toKey]?.raw;
+        let weight = 0;
+        if (!addedFromNodes.has(from)) {
+            const raw = data[0]?.[fromKey]?.raw;
+            if (typeof raw === 'number') {
+                weight = raw;
+                addedFromNodes.add(from);
+            } else {
+                console.log(`Invalid or missing raw value for ${from}`);
+                return;
+            }
         } else {
-            // All other cases -> use 'from' value
-            weight = data[0]?.[fromKey]?.raw;
-        }
-
-        if (typeof weight !== 'number') {
-            console.log('invalid weight value for link:', link);
-            return;
+            weight = 0; // If already added, weight is zero
         }
 
         const mapKey = `${from}-${to}`;
@@ -68,10 +52,7 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
     }));
 
     const links = Array.from(linkMap.values());
-
-    console.log("Center nodes:", [...centerNodes]);
-    console.log("Final links:", links);
-
+    console.log("Final links (no duplicate weights):", links);
 
     return { nodes, links };
 }
