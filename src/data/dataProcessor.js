@@ -23,16 +23,16 @@ export function processSankeyData(data, dimensions, measures, manualLinks) {
             return;
         }
 
-        let total = 0;
-        data.forEach(row => {
-            const value = row[fromKey]?.raw;
-            if (typeof value === 'number') {
-                total += value;
-            }
-        });
+        const row = data[0];
+        const raw = row[fromKey]?.raw;
+
+        if (typeof raw !== 'number') {
+            console.log(`Skipping link: no numeric value for ${from}`);
+            return;
+        }
 
         const mapKey = `${from}-${to}`;
-        linkMap.set(mapKey, { from, to, weight: total });
+        linkMap.set(mapKey, { from, to, weight: raw });
 
         usedMeasureNames.add(from);
         usedMeasureNames.add(to);
