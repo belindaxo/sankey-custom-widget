@@ -2,27 +2,7 @@ import * as Highcharts from 'highcharts';
 import 'highcharts/modules/sankey';
 import { parseMetadata } from './data/metadataParser';
 import { processSankeyData } from './data/dataProcessor';
-
-// /**
-//  * Parses metadata into structured dimensions and measures.
-//  * @param {Object} metadata - The metadata object from SAC data binding.
-//  * @returns {Object} An object containing parsed dimensions, measures, and their maps.
-//  */
-// var parseMetadata = metadata => {
-//     const { dimensions: dimensionsMap, mainStructureMembers: measuresMap } = metadata;
-//     const dimensions = [];
-//     for (const key in dimensionsMap) {
-//         const dimension = dimensionsMap[key];
-//         dimensions.push({ key, ...dimension });
-//     }
-
-//     const measures = [];
-//     for (const key in measuresMap) {
-//         const measure = measuresMap[key];
-//         measures.push({ key, ...measure });
-//     }
-//     return { dimensions, measures, dimensionsMap, measuresMap };
-// }
+import { applyHighchartsDefaults } from './config/highchartsSetup';
 
 (function () {
     class Sankey extends HTMLElement {
@@ -172,12 +152,8 @@ import { processSankeyData } from './data/dataProcessor';
                 }
             });
 
-            Highcharts.setOptions({
-                lang: {
-                    thousandsSep: ','
-                },
-                colors: ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#006ac7', '#ccced2', '#bf8028', '#00e4a7']
-            });
+            // Global Configurations
+            applyHighchartsDefaults();
 
             const chartOptions = {
                 chart: {
