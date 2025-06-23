@@ -1,27 +1,28 @@
 import * as Highcharts from 'highcharts';
 import 'highcharts/modules/sankey';
+import { parseMetadata } from './data/metadataParser';
 import { processSankeyData } from './data/dataProcessor';
 
-/**
- * Parses metadata into structured dimensions and measures.
- * @param {Object} metadata - The metadata object from SAC data binding.
- * @returns {Object} An object containing parsed dimensions, measures, and their maps.
- */
-var parseMetadata = metadata => {
-    const { dimensions: dimensionsMap, mainStructureMembers: measuresMap } = metadata;
-    const dimensions = [];
-    for (const key in dimensionsMap) {
-        const dimension = dimensionsMap[key];
-        dimensions.push({ key, ...dimension });
-    }
+// /**
+//  * Parses metadata into structured dimensions and measures.
+//  * @param {Object} metadata - The metadata object from SAC data binding.
+//  * @returns {Object} An object containing parsed dimensions, measures, and their maps.
+//  */
+// var parseMetadata = metadata => {
+//     const { dimensions: dimensionsMap, mainStructureMembers: measuresMap } = metadata;
+//     const dimensions = [];
+//     for (const key in dimensionsMap) {
+//         const dimension = dimensionsMap[key];
+//         dimensions.push({ key, ...dimension });
+//     }
 
-    const measures = [];
-    for (const key in measuresMap) {
-        const measure = measuresMap[key];
-        measures.push({ key, ...measure });
-    }
-    return { dimensions, measures, dimensionsMap, measuresMap };
-}
+//     const measures = [];
+//     for (const key in measuresMap) {
+//         const measure = measuresMap[key];
+//         measures.push({ key, ...measure });
+//     }
+//     return { dimensions, measures, dimensionsMap, measuresMap };
+// }
 
 (function () {
     class Sankey extends HTMLElement {
