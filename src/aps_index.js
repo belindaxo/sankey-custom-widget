@@ -258,7 +258,7 @@
                     removeButton.type = 'button';
                     removeButton.addEventListener('click', () => {
                         this.manualLinks.splice(index, 1);
-                        renderLinksTable();
+                        this._renderLinksTable();
                         this._submit(new Event('submit'));
                     });
 
@@ -337,7 +337,8 @@
                         isInverted: this.isInverted,
                         linkColorMode: this.linkColorMode,
                         centerNode: this.centerNode,
-                        manualLinks: this.manualLinks
+                        manualLinks: this.manualLinks,
+                        validMeasureNames: this.validMeasureNames
                     }
                 }
             }));
