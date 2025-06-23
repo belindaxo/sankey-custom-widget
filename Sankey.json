@@ -101,6 +101,21 @@
             "type": "string",
             "description": "The color mode of the links (from, to, gradient)",
             "default": "from"
+        },
+        "centerNode": {
+            "type": "string",
+            "description": "The name of the center node.",
+            "default": ""
+        },
+        "manualLinks": {
+            "type": "ManualLink[]",
+            "description": "An array of user-defined links to be displayed in the chart.",
+            "default": []
+        },
+        "validMeasureNames": {
+            "type": "string[]",
+            "description": "List of valid measure names used in the chart.",
+            "default": []
         }
     },
     "methods": {
@@ -140,6 +155,19 @@
                 {
                     "name": "value", 
                     "type": "number"
+                }
+            ]
+        },
+        "ManualLink": {
+            "description": "Represents a user-defined link in the Sankey chart.",
+            "properties": [
+                {
+                    "name": "from", 
+                    "type": "string"
+                },
+                {
+                    "name": "to", 
+                    "type": "string"
                 }
             ]
         }

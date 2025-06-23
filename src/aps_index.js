@@ -161,6 +161,19 @@
         <tr>
             <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
         </tr>
+        <legend style="font-weight: bold; font-size: 18px;">Link Definitions</legend>
+        <tr>
+            <td>Center Node:</td>
+        </tr>
+        <tr>
+            <td>
+                <select id="centerNode">
+                    <option value=""> Select Center Node </option>
+                </select>
+            </td>
+        </tr>
+        <div id="linksContainer" style="margin-bottom: 10px;"></div>
+        <button type="button" id="addLinkButton">+ Add Link</button>
         <input type="submit" style="display:none;">
         </form>
     `;
@@ -169,7 +182,7 @@
      * Custom Web Component for the Styling Panel (APS) of the Funnel3D widget.
      * @extends HTMLElement
      */
-    class Sankey extends HTMLElement {
+    class SankeyAps extends HTMLElement {
         /**
          * Initializes the shadow DOM and sets up event listeners for form inputs.
          */
@@ -195,6 +208,91 @@
 
             this._shadowRoot = this.attachShadow({ mode: 'open' });
             this._shadowRoot.appendChild(template.content.cloneNode(true));
+
+            this._centerNodeDropdown = this._shadowRoot.getElementById('centerNode');
+            this._populateCenterNodeDropdown = (measures) => {
+                this._centerNodeDropdown.innerHTML = '<option value=""> Select Center Node </option>';
+                measures.forEach(measure => {
+                    const option = document.createElement('option');
+                    option.value = measure;
+                    option.textContent = measure;
+                    this._centerNodeDropdown.appendChild(option);
+                });
+            };
+
+            this.manualLinks = [];
+
+            const linksContainer = this._shadowRoot.getElementById('linksContainer');
+            const addLinkButton = this._shadowRoot.getElementById('addLinkButton');
+
+            const renderLinksTable = () => {
+                linksContainer.innerHTML = '';
+                this.manualLinks.forEach((link, index) => {
+                    const row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.marginBottom = '6px';
+
+                    const fromSelect = document.createElement('select');
+                    fromSelect.style.marginRight = '6px';
+
+                    this.validMeasureNames?.forEach(measure => {
+                        const option = document.createElement('option');
+                        option.value = measure;
+                        option.textContent = measure;
+                        if (measure === link.from) {
+                            option.selected = true;
+                        }
+                        fromSelect.appendChild(option);
+                    })
+
+                    fromSelect.addEventListener('change', () => {
+                        this.manualLinks[index].from = fromSelect.value;
+                        this.manualLinks = [...this.manualLinks]; // Trigger reactivity
+                        this._submit(new Event('submit'));
+                    });
+
+                    const toSelect = document.createElement('select');
+                    toSelect.style.marginRight = '6px';
+
+                    this.validMeasureNames?.forEach(measure => {
+                        const option = document.createElement('option');
+                        option.value = measure;
+                        option.textContent = measure;
+                        if (measure === link.to) {
+                            option.selected = true;
+                        }
+                        toSelect.appendChild(option);
+                    });
+
+                    toSelect.addEventListener('change', () => {
+                        this.manualLinks[index].to = toSelect.value;
+                        this.manualLinks = [...this.manualLinks]; // Trigger reactivity
+                        this._submit(new Event('submit'));
+                    });
+
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = 'Remove';
+                    removeButton.type = 'button';
+                    removeButton.addEventListener('click', () => {
+                        this.manualLinks.splice(index, 1);
+                        this.manualLinks = [...this.manualLinks]; // Trigger reactivity
+                        renderLinksTable();
+                        this._submit(new Event('submit'));
+                    });
+
+                    row.appendChild(fromSelect);
+                    row.appendChild(toSelect);
+                    row.appendChild(removeButton);
+                    linksContainer.appendChild(row);
+                });
+            };
+
+            addLinkButton.addEventListener('click', () => {
+                this.manualLinks.push({ from: '', to: '' });
+                renderLinksTable();
+                this._submit(new Event('submit'));
+            });
+
             this._shadowRoot.getElementById('form').addEventListener('submit', this._submit.bind(this));
             this._shadowRoot.getElementById('titleSize').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('titleFontStyle').addEventListener('change', this._submit.bind(this));
@@ -208,8 +306,8 @@
             this._shadowRoot.getElementById('decimalPlaces').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('isInverted').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('linkColorMode').addEventListener('change', this._submit.bind(this));
+            this._shadowRoot.getElementById('centerNode').addEventListener('change', this._submit.bind(this));
 
-            
             // Reset button logic
             this._shadowRoot.getElementById('resetDefaults').addEventListener('click', () => {
                 for (const key in DEFAULTS) {
@@ -228,8 +326,11 @@
                 }
                 this._submit(new Event('submit')); // Trigger submit event to update properties
             });
+
+            this._renderLinksTable = renderLinksTable;
+            this._renderLinksTable();
         }
-        
+
         /**
          * Handles the form submissions and dispatches a 'propertiesChanged' event.
          * @param {Event} e - The form submission event.
@@ -252,7 +353,10 @@
                         scaleFormat: this.scaleFormat,
                         decimalPlaces: this.decimalPlaces,
                         isInverted: this.isInverted,
-                        linkColorMode: this.linkColorMode
+                        linkColorMode: this.linkColorMode,
+                        centerNode: this.centerNode,
+                        manualLinks: this.manualLinks,
+                        validMeasureNames: this.validMeasureNames
                     }
                 }
             }));
@@ -264,7 +368,7 @@
         get chartTitle() {
             return this._shadowRoot.getElementById('chartTitle').value;
         }
-        
+
         set chartTitle(value) {
             this._shadowRoot.getElementById('chartTitle').value = value;
         }
@@ -374,6 +478,41 @@
         set linkColorMode(value) {
             this._shadowRoot.getElementById('linkColorMode').value = value;
         }
+
+        get centerNode() {
+            return this._shadowRoot.getElementById('centerNode').value;
+        }
+
+        set centerNode(value) {
+            this._shadowRoot.getElementById('centerNode').value = value;
+        }
+
+        get manualLinks() {
+            return this._manualLinks || [];
+        }
+
+        set manualLinks(value) {
+            this._manualLinks = value || [];
+            if (this._renderLinksTable) {
+                this._renderLinksTable();
+            }
+        }
+
+        get validMeasureNames() {
+            return this._validMeasureNames || [];
+        }
+
+        set validMeasureNames(value) {
+            console.log("validMeasureNames set to:", value);
+            this._validMeasureNames = value || [];
+            if (this._renderLinksTable) {
+                this._renderLinksTable();
+            }
+            if (this._populateCenterNodeDropdown) {
+                this._populateCenterNodeDropdown(this._validMeasureNames);
+            }
+        }
+
     }
-    customElements.define('com-sap-sample-sankey-aps', Sankey);
+    customElements.define('com-sap-sample-sankey-aps', SankeyAps);
 })();
