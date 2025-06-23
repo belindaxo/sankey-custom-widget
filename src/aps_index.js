@@ -248,7 +248,7 @@
                         toSelect.appendChild(option);
                     });
 
-                    toSelect.addEventListener('input', () => {
+                    toSelect.addEventListener('change', () => {
                         this.manualLinks[index].to = toSelect.value;
                         this._submit(new Event('submit'));
                     });
