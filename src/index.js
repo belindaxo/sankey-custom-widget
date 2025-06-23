@@ -4,6 +4,7 @@ import { parseMetadata } from './data/metadataParser';
 import { processSankeyData } from './data/dataProcessor';
 import { applyHighchartsDefaults } from './config/highchartsSetup';
 import { createChartStylesheet } from './config/styles';
+import { scaleValue } from './formatting/scaleFormatter';
 
 (function () {
     class Sankey extends HTMLElement {
@@ -124,7 +125,7 @@ import { createChartStylesheet } from './config/styles';
 
 
 
-            const scaleFormat = (value) => this._scaleFormat(value);
+            const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
             const subtitleText = this._updateSubtitle();
 
             const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
@@ -272,31 +273,31 @@ import { createChartStylesheet } from './config/styles';
             }
         }
 
-        _scaleFormat(value) {
-            let scaledValue = value;
-            let valueSuffix = '';
+        // _scaleFormat(value) {
+        //     let scaledValue = value;
+        //     let valueSuffix = '';
 
-            switch (this.scaleFormat) {
-                case 'k':
-                    scaledValue = value / 1000;
-                    valueSuffix = 'k';
-                    break;
-                case 'm':
-                    scaledValue = value / 1000000;
-                    valueSuffix = 'm';
-                    break;
-                case 'b':
-                    scaledValue = value / 1000000000;
-                    valueSuffix = 'b';
-                    break;
-                default:
-                    break;
-            }
-            return {
-                scaledValue: scaledValue.toFixed(this.decimalPlaces),
-                valueSuffix
-            };
-        }
+        //     switch (this.scaleFormat) {
+        //         case 'k':
+        //             scaledValue = value / 1000;
+        //             valueSuffix = 'k';
+        //             break;
+        //         case 'm':
+        //             scaledValue = value / 1000000;
+        //             valueSuffix = 'm';
+        //             break;
+        //         case 'b':
+        //             scaledValue = value / 1000000000;
+        //             valueSuffix = 'b';
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        //     return {
+        //         scaledValue: scaledValue.toFixed(this.decimalPlaces),
+        //         valueSuffix
+        //     };
+        // }
 
         // SAC scripting methods
 
