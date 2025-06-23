@@ -3,6 +3,7 @@ import 'highcharts/modules/sankey';
 import { parseMetadata } from './data/metadataParser';
 import { processSankeyData } from './data/dataProcessor';
 import { applyHighchartsDefaults } from './config/highchartsSetup';
+import { createChartStylesheet } from './config/styles';
 
 (function () {
     class Sankey extends HTMLElement {
@@ -13,22 +14,22 @@ import { applyHighchartsDefaults } from './config/highchartsSetup';
             this.nodes = [];
             this.links = [];
 
-            // Create a CSSStyleSheet for the shadow DOM
-            const sheet = new CSSStyleSheet();
-            sheet.replaceSync(`
-                @font-face {
-                    font-family: '72';
-                    src: url('../fonts/72-Regular.woff2') format('woff2');
-                }
-                #container {
-                    width: 100%;
-                    height: 100%;
-                    font-family: '72';
-                }
-            `);
+            // // Create a CSSStyleSheet for the shadow DOM
+            // const sheet = new CSSStyleSheet();
+            // sheet.replaceSync(`
+            //     @font-face {
+            //         font-family: '72';
+            //         src: url('../fonts/72-Regular.woff2') format('woff2');
+            //     }
+            //     #container {
+            //         width: 100%;
+            //         height: 100%;
+            //         font-family: '72';
+            //     }
+            // `);
 
             // Apply the stylesheet to the shadow DOM
-            this.shadowRoot.adoptedStyleSheets = [sheet];
+            this.shadowRoot.adoptedStyleSheets = [createChartStylesheet()];
 
             // Add the container for the chart
             this.shadowRoot.innerHTML = `
