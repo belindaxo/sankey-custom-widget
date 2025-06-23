@@ -5,6 +5,7 @@ import { processSankeyData } from './data/dataProcessor';
 import { applyHighchartsDefaults } from './config/highchartsSetup';
 import { createChartStylesheet } from './config/styles';
 import { scaleValue } from './formatting/scaleFormatter';
+import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipFormatters';
 
 (function () {
     class Sankey extends HTMLElement {
@@ -14,20 +15,6 @@ import { scaleValue } from './formatting/scaleFormatter';
 
             this.nodes = [];
             this.links = [];
-
-            // // Create a CSSStyleSheet for the shadow DOM
-            // const sheet = new CSSStyleSheet();
-            // sheet.replaceSync(`
-            //     @font-face {
-            //         font-family: '72';
-            //         src: url('../fonts/72-Regular.woff2') format('woff2');
-            //     }
-            //     #container {
-            //         width: 100%;
-            //         height: 100%;
-            //         font-family: '72';
-            //     }
-            // `);
 
             // Apply the stylesheet to the shadow DOM
             this.shadowRoot.adoptedStyleSheets = [createChartStylesheet()];
@@ -77,7 +64,7 @@ import { scaleValue } from './formatting/scaleFormatter';
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
                 'isInverted', "linkColorMode", "manualLinks", "centerNode",                                 // Sankey chart properties
-                'customColors'
+                'customColors'                                                                              // Custom colors
             ];
         }
 
@@ -188,8 +175,8 @@ import { scaleValue } from './formatting/scaleFormatter';
                 },
                 tooltip: {
                     headerFormat: null,
-                    pointFormatter: this._formatTooltipPoint(scaleFormat),
-                    nodeFormatter: this._formatTooltipNode(scaleFormat),
+                    pointFormatter: formatTooltipPoint(scaleFormat),
+                    nodeFormatter: formatTooltipNode(scaleFormat),
                 },
                 series: [{
                     keys: ['from', 'to', 'weight'],
@@ -202,49 +189,49 @@ import { scaleValue } from './formatting/scaleFormatter';
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
         }
 
-        /**
-         * 
-         * @param {Function} scaleFormat - A function to scale and format the value.
-         * @returns {Function} A function that formats the tooltip for the point.
-         */
-        _formatTooltipPoint(scaleFormat) {
-            return function () {
-                console.log(this);
-                if (this) {
-                    const { scaledValue, valueSuffix } = scaleFormat(this.weight);
-                    const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
-                    const valueWithSuffix = `${value} ${valueSuffix}`;
-                    const fromNodeName = this.from;
-                    const toNodeName = this.to;
-                    return `
-                        ${fromNodeName} \u2192 ${toNodeName}: ${valueWithSuffix}
-                    `;
-                } else {
-                    return 'Error with data';
-                }
-            }
-        }
+        // /**
+        //  * 
+        //  * @param {Function} scaleFormat - A function to scale and format the value.
+        //  * @returns {Function} A function that formats the tooltip for the point.
+        //  */
+        // _formatTooltipPoint(scaleFormat) {
+        //     return function () {
+        //         console.log(this);
+        //         if (this) {
+        //             const { scaledValue, valueSuffix } = scaleFormat(this.weight);
+        //             const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
+        //             const valueWithSuffix = `${value} ${valueSuffix}`;
+        //             const fromNodeName = this.from;
+        //             const toNodeName = this.to;
+        //             return `
+        //                 ${fromNodeName} \u2192 ${toNodeName}: ${valueWithSuffix}
+        //             `;
+        //         } else {
+        //             return 'Error with data';
+        //         }
+        //     }
+        // }
 
-        /**
-         * 
-         * @param {Function} scaleFormat - A function to scale and format the value.
-         * @returns {Function} A function that formats the tooltip for the node.
-         */
-        _formatTooltipNode(scaleFormat) {
-            return function () {
-                if (this) {
-                    const { scaledValue, valueSuffix } = scaleFormat(this.sum);
-                    const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
-                    const valueWithSuffix = `${value} ${valueSuffix}`;
-                    const name = this.name;
-                    return `
-                        ${name}: ${valueWithSuffix}
-                    `;
-                } else {
-                    return 'Error with data';
-                }
-            }
-        }
+        // /**
+        //  * 
+        //  * @param {Function} scaleFormat - A function to scale and format the value.
+        //  * @returns {Function} A function that formats the tooltip for the node.
+        //  */
+        // _formatTooltipNode(scaleFormat) {
+        //     return function () {
+        //         if (this) {
+        //             const { scaledValue, valueSuffix } = scaleFormat(this.sum);
+        //             const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
+        //             const valueWithSuffix = `${value} ${valueSuffix}`;
+        //             const name = this.name;
+        //             return `
+        //                 ${name}: ${valueWithSuffix}
+        //             `;
+        //         } else {
+        //             return 'Error with data';
+        //         }
+        //     }
+        // }
 
         /**
          * Determines subtitle text based on scale format or user input.
@@ -272,32 +259,6 @@ import { scaleValue } from './formatting/scaleFormatter';
                 return this.chartSubtitle;
             }
         }
-
-        // _scaleFormat(value) {
-        //     let scaledValue = value;
-        //     let valueSuffix = '';
-
-        //     switch (this.scaleFormat) {
-        //         case 'k':
-        //             scaledValue = value / 1000;
-        //             valueSuffix = 'k';
-        //             break;
-        //         case 'm':
-        //             scaledValue = value / 1000000;
-        //             valueSuffix = 'm';
-        //             break;
-        //         case 'b':
-        //             scaledValue = value / 1000000000;
-        //             valueSuffix = 'b';
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        //     return {
-        //         scaledValue: scaledValue.toFixed(this.decimalPlaces),
-        //         valueSuffix
-        //     };
-        // }
 
         // SAC scripting methods
 
