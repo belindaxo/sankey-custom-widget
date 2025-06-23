@@ -111,6 +111,11 @@
             "type": "ManualLink[]",
             "description": "An array of user-defined links to be displayed in the chart.",
             "default": []
+        },
+        "validMeasureNames": {
+            "type": "string[]",
+            "description": "List of valid measure names used in the chart.",
+            "default": []
         }
     },
     "methods": {

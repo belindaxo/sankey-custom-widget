@@ -53,6 +53,8 @@ var parseMetadata = metadata => {
             this.shadowRoot.innerHTML = `
                 <div id="container"></div>    
             `;
+
+            this._lastSentMeasures = [];
         }
 
         /**
@@ -137,6 +139,8 @@ var parseMetadata = metadata => {
             console.log('dimensions:', dimensions);
             console.log('measures:', measures);
 
+
+
             const scaleFormat = (value) => this._scaleFormat(value);
             const subtitleText = this._updateSubtitle();
 
@@ -145,6 +149,17 @@ var parseMetadata = metadata => {
             this.links = links;
             console.log('Processed nodes:', nodes);
             console.log('Processed links:', links);
+
+            const validMeasureNames = nodes.map(n => n.name) || [];
+            if (JSON.stringify(this._lastSentMeasures) !== JSON.stringify(validMeasureNames)) {
+                this.dispatchEvent(new CustomEvent('propertiesChanged', {
+                    detail: {
+                        properties: {
+                            validMeasureNames
+                        }
+                    }
+                }));
+            }
 
             Highcharts.setOptions({
                 lang: {

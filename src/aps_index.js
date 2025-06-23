@@ -217,23 +217,40 @@
                     row.style.display = 'flex';
                     row.style.marginBottom = '6px';
 
-                    const fromInput = document.createElement('input');
-                    fromInput.type = 'text';
-                    fromInput.placeholder = 'From';
-                    fromInput.value = link.from || '';
-                    fromInput.style.marginRight = '6px';
-                    fromInput.addEventListener('input', () => {
-                        this.manualLinks[index].from = fromInput.value;
+                    const fromSelect = document.createElement('select');
+                    fromSelect.style.marginRight = '6px';
+
+                    this.validMeasureNames?.forEach(measure => {
+                        const option = document.createElement('option');
+                        option.value = measure;
+                        option.textContent = measure;
+                        if (measure === link.from) {
+                            option.selected = true;
+                        }
+                        fromSelect.appendChild(option);
+                    })
+
+                    fromSelect.addEventListener('change', () => {
+                        this.manualLinks[index].from = fromSelect.value;
                         this._submit(new Event('submit'));
                     });
 
-                    const toInput = document.createElement('input');
-                    toInput.type = 'text';
-                    toInput.placeholder = 'To';
-                    toInput.value = link.to || '';
-                    toInput.style.marginRight = '6px';
-                    toInput.addEventListener('input', () => {
-                        this.manualLinks[index].to = toInput.value;
+                    const toSelect = document.createElement('select');
+                    toSelect.type = 'text';
+                    toSelect.style.marginRight = '6px';
+
+                    this.validMeasureNames?.forEach(measure => {
+                        const option = document.createElement('option');
+                        option.value = measure;
+                        option.textContent = measure;
+                        if (measure === link.to) {
+                            option.selected = true;
+                        }
+                        toSelect.appendChild(option);
+                    });
+                    
+                    toSelect.addEventListener('input', () => {
+                        this.manualLinks[index].to = toSelect.value;
                         this._submit(new Event('submit'));
                     });
 
@@ -246,8 +263,8 @@
                         this._submit(new Event('submit'));
                     });
 
-                    row.appendChild(fromInput);
-                    row.appendChild(toInput);
+                    row.appendChild(fromSelect);
+                    row.appendChild(toSelect);
                     row.appendChild(removeButton);
                     linksContainer.appendChild(row);
                 });
@@ -458,6 +475,17 @@
 
         set manualLinks(value) {
             this._manualLinks = value || [];
+            if (this._renderLinksTable) {
+                this._renderLinksTable();
+            }
+        }
+
+        get validMeasureNames() {
+            return this._validMeasureNames || [];
+        }
+
+        set validMeasureNames(value) {
+            this._validMeasureNames = value || [];
             if (this._renderLinksTable) {
                 this._renderLinksTable();
             }
