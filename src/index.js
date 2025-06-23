@@ -152,6 +152,7 @@ var parseMetadata = metadata => {
 
             const validMeasureNames = nodes.map(n => n.name) || [];
             if (JSON.stringify(this._lastSentMeasures) !== JSON.stringify(validMeasureNames)) {
+                this._lastSentMeasures = validMeasureNames;
                 this.dispatchEvent(new CustomEvent('propertiesChanged', {
                     detail: {
                         properties: {
