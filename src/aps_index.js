@@ -232,6 +232,7 @@
 
                     fromSelect.addEventListener('change', () => {
                         this.manualLinks[index].from = fromSelect.value;
+                        this.manualLinks = [...this.manualLinks]; // Trigger reactivity
                         this._submit(new Event('submit'));
                     });
 
@@ -250,6 +251,7 @@
 
                     toSelect.addEventListener('change', () => {
                         this.manualLinks[index].to = toSelect.value;
+                        this.manualLinks = [...this.manualLinks]; // Trigger reactivity
                         this._submit(new Event('submit'));
                     });
 
@@ -258,7 +260,8 @@
                     removeButton.type = 'button';
                     removeButton.addEventListener('click', () => {
                         this.manualLinks.splice(index, 1);
-                        this._renderLinksTable();
+                        this.manualLinks = [...this.manualLinks]; // Trigger reactivity
+                        renderLinksTable();
                         this._submit(new Event('submit'));
                     });
 
