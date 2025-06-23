@@ -86,6 +86,7 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
          * Renders the chart using the provided data and metadata.
          */
         _renderChart() {
+            // Initialization
             const dataBinding = this.dataBinding;
             if (!dataBinding || dataBinding.state !== 'success' || !dataBinding.data || dataBinding.data.length === 0) {
                 if (this._chart) {
@@ -95,6 +96,9 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
                 return;
             }
             console.log('dataBinding:', dataBinding);
+
+            
+            // Data Extraction and Validation
             const { data, metadata } = dataBinding;
             const { dimensions, measures } = parseMetadata(metadata);
 
@@ -105,17 +109,13 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
                 }
                 return;
             }
-
             console.log('data:', data);
             console.log('metadata:', metadata);
             console.log('dimensions:', dimensions);
             console.log('measures:', measures);
 
 
-
-            const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
-            const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
-
+            // Series Data Preparation
             const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
             this.nodes = nodes;
             this.links = links;
@@ -134,6 +134,13 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
                 }));
             }
 
+
+            // Formatters and Chart Options
+            const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
+            const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
+
+
+            // Series Styling
             const customColors = this.customColors || [];
             const colorMap = new Map(customColors.map(c => [c.category, c.color]));
             nodes.forEach(node => {
@@ -142,9 +149,12 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
                 }
             });
 
+
             // Global Configurations
             applyHighchartsDefaults();
 
+
+            // Chart Options Construction
             const chartOptions = {
                 chart: {
                     type: 'sankey',
@@ -190,35 +200,8 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
         }
 
-        /**
-         * Determines subtitle text based on scale format or user input.
-         * @returns {string} The subtitle text.
-         */
-        // _updateSubtitle() {
-        //     if (!this.chartSubtitle || this.chartSubtitle.trim() === '') {
-        //         let subtitleText = '';
-        //         switch (this.scaleFormat) {
-        //             case 'k':
-        //                 subtitleText = 'in k';
-        //                 break;
-        //             case 'm':
-        //                 subtitleText = 'in m';
-        //                 break;
-        //             case 'b':
-        //                 subtitleText = 'in b';
-        //                 break;
-        //             default:
-        //                 subtitleText = '';
-        //                 break;
-        //         }
-        //         return subtitleText;
-        //     } else {
-        //         return this.chartSubtitle;
-        //     }
-        // }
 
-        // SAC scripting methods
-
+        // SAC Scripting Methods
         getNodes() {
             return this.nodes;
         }
