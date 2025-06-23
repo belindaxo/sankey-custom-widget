@@ -1,3 +1,5 @@
+const defaultColors = ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#006ac7', '#ccced2', '#bf8028', '#00e4a7'];
+
 (function () {
     /**
      * Template for the Styling Panel (APS) of the Funnel3D widget.
@@ -174,6 +176,13 @@
         </tr>
         <div id="linksContainer" style="margin-bottom: 10px;"></div>
         <button type="button" id="addLinkButton">+ Add Link</button>
+        <legend style="font-weight: bold; font-size: 18px;">Node Colors</legend>
+        <table>
+            <div id="nodeColorContainer" style="margin-bottom: 10px;"></div>
+            <tr>
+                <td><button type="button" id="resetColors">Reset Colors</button></td>
+            </tr>
+        </table>
         <input type="submit" style="display:none;">
         </form>
     `;
@@ -293,6 +302,59 @@
                 this._submit(new Event('submit'));
             });
 
+            this.customColors = [];
+
+            const renderNodeColorsTable = () => {
+                const container = this._shadowRoot.getElementById('nodeColorContainer');
+                container.innerHTML = '';
+                (this.validMeasureNames || []).forEach(measure => {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.display = 'flex';
+                    wrapper.style.alignItems = 'center';
+                    wrapper.style.marginBottom = '6px';
+
+                    const label = document.createElement('span');
+                    label.textContent = measure;
+                    label.style.width = '140px';
+
+                    const input = document.createElement('input');
+                    input.type = 'color';
+                    input.style.marginLeft = '8px';
+
+                    const currentColor = this.customColors.find(c => c.category === measure)?.color;
+                    const defaultIndex = this.validMeasureNames.indexOf(measure) % defaultColors.length;
+                    input.value = currentColor || defaultColors[defaultIndex];
+
+                    input.addEventListener('change', () => {
+                        const existing = this.customColors.find(c => c.category === measure);
+                        const updatedColor = input.value;
+                        if (existing) {
+                            if (updatedColor === defaultColors[defaultIndex]) {
+                                this.customColors = this.customColors.filter(c => c.category !== measure);
+                            } else {
+                                existing.color = updatedColor;
+                                this.customColors = [...this.customColors]; // Trigger reactivity
+                            }
+                        } else if (updatedColor !== defaultColors[defaultIndex]) {
+                            this.customColors = [...this.customColors, { category: measure, color: updatedColor }];
+                        }
+
+                        this._submit(new Event('submit'));
+                    });
+
+                    wrapper.appendChild(label);
+                    wrapper.appendChild(input);
+                    container.appendChild(wrapper);
+                });
+            };
+
+            const resetColorsButton = this._shadowRoot.getElementById('resetColors');
+            resetColorsButton.addEventListener('click', () => {
+                this.customColors = [];
+                renderNodeColorsTable();
+                this._submit(new Event('submit'));
+            });
+
             this._shadowRoot.getElementById('form').addEventListener('submit', this._submit.bind(this));
             this._shadowRoot.getElementById('titleSize').addEventListener('change', this._submit.bind(this));
             this._shadowRoot.getElementById('titleFontStyle').addEventListener('change', this._submit.bind(this));
@@ -329,6 +391,9 @@
 
             this._renderLinksTable = renderLinksTable;
             this._renderLinksTable();
+
+            this._renderNodeColorsTable = renderNodeColorsTable;
+            this._renderNodeColorsTable();
         }
 
         /**
@@ -356,7 +421,8 @@
                         linkColorMode: this.linkColorMode,
                         centerNode: this.centerNode,
                         manualLinks: this.manualLinks,
-                        validMeasureNames: this.validMeasureNames
+                        validMeasureNames: this.validMeasureNames,
+                        customColors: this.customColors
                     }
                 }
             }));
@@ -510,6 +576,16 @@
             }
             if (this._populateCenterNodeDropdown) {
                 this._populateCenterNodeDropdown(this._validMeasureNames);
+            }
+        }
+
+        get customColors() {
+            return this._customColors || [];
+        }
+        set customColors(value) {
+            this._customColors = value || [];
+            if (this._renderNodeColorsTable && this._validMeasureNames) {
+                this._renderNodeColorsTable(); 
             }
         }
 

@@ -116,6 +116,11 @@
             "type": "string[]",
             "description": "List of valid measure names used in the chart.",
             "default": []
+        },
+        "customColors": {
+            "type": "CustomColor[]",
+            "description": "List of node-color mappings.",
+            "default": []
         }
     },
     "methods": {
@@ -167,6 +172,19 @@
                 },
                 {
                     "name": "to", 
+                    "type": "string"
+                }
+            ]
+        },
+        "CustomColor": {
+            "description": "Represents a custom color in the customColors array.",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "color",
                     "type": "string"
                 }
             ]
