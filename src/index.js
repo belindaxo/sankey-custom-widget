@@ -93,8 +93,7 @@ var parseMetadata = metadata => {
                 'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
-                'isInverted', "linkColorMode", "manualLinks", "centerNode",                                 // Sankey chart properties
-                'customColors'
+                'isInverted', "linkColorMode", "manualLinks", "centerNode"                                  // Sankey chart properties
             ];
         }
 
@@ -144,7 +143,6 @@ var parseMetadata = metadata => {
 
             const scaleFormat = (value) => this._scaleFormat(value);
             const subtitleText = this._updateSubtitle();
-            const customColors = this.customColors || [];
 
             const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
             this.nodes = nodes;
@@ -163,12 +161,6 @@ var parseMetadata = metadata => {
                     }
                 }));
             }
-
-            nodes.forEach(node => {
-                if (this.customColors[node.name]) {
-                    node.color = this.customColors[node.name];
-                }
-            });
 
             Highcharts.setOptions({
                 lang: {
