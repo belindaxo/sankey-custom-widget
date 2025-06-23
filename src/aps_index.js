@@ -218,6 +218,10 @@
                     option.textContent = measure;
                     this._centerNodeDropdown.appendChild(option);
                 });
+
+                if (this._centerNodeValue && measures.includes(this._centerNodeValue)) {
+                    this._centerNodeDropdown.value = this._centerNodeValue;
+                }
             };
 
             this.manualLinks = [];
@@ -484,6 +488,7 @@
         }
 
         set centerNode(value) {
+            this._centerNodeValue = value;
             this._shadowRoot.getElementById('centerNode').value = value;
         }
 
