@@ -11,8 +11,8 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 </head>
-
 <body>
     <script>
         class MyCustomElement extends HTMLElement {
@@ -223,6 +223,95 @@
             }
         }
         customElements.define('my-custom-element', MyCustomElement);
+
+        const sampleLinks = [
+            { from: "Product Revenue", to: "Order Revenue" },
+            { from: "Service Revenue", to: "Order Revenue" },
+            { from: "Project Revenue", to: "Order Revenue" },
+            { from: "Order Revenue", to: "Revenue" }
+        ];
+
+        function renderManualLinksTable() {
+            const container = document.getElementById("linksContainer");
+            container.innerHTML = `
+                <table id="manualLinksTable" border="0" cellpadding="5">
+                    <tbody id="manualLinksTableBody"></tbody>
+                </table>
+            `;
+
+            const tbody = document.getElementById("manualLinksTableBody");
+            sampleLinks.forEach((link, index) => {
+                const row = document.createElement("tr");
+                row.setAttribute("data-index", index);
+
+                const dragCell = document.createElement("td");
+                dragCell.className = "drag-handle";
+                dragCell.style.cursor = "move";
+                dragCell.innerText = "☰";
+                row.appendChild(dragCell);
+
+                const fromCell = document.createElement("td");
+                const fromInput = document.createElement("input");
+                fromInput.type = "text";
+                fromInput.value = link.from;
+                fromInput.oninput = () => (sampleLinks[index].from = fromInput.value);
+                fromCell.appendChild(fromInput);
+                row.appendChild(fromCell);
+
+                const toCell = document.createElement("td");
+                const toInput = document.createElement("input");
+                toInput.type = "text";
+                toInput.value = link.to;
+                toInput.oninput = () => (sampleLinks[index].to = toInput.value);
+                toCell.appendChild(toInput);
+                row.appendChild(toCell);
+
+                const deleteCell = document.createElement("td");
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerText = "Remove";
+                deleteBtn.onclick = () => {
+                    sampleLinks.splice(index, 1);
+                    renderManualLinksTable();
+                };
+                deleteCell.appendChild(deleteBtn);
+                row.appendChild(deleteCell);
+
+                tbody.appendChild(row);
+            });
+
+            enableSortable();
+        }
+
+        function enableSortable() {
+            const tbody = document.getElementById("manualLinksTableBody");
+            if (tbody._sortableInstance) {
+                tbody._sortableInstance.destroy();
+            }
+            tbody._sortableInstance = Sortable.create(tbody, {
+                animation: 150,
+                handle: ".drag-handle",
+                onEnd: () => {
+                    const rows = Array.from(tbody.querySelectorAll("tr"));
+                    const newOrder = rows.map(row => {
+                        const oldIndex = parseInt(row.getAttribute("data-index"));
+                        return sampleLinks[oldIndex];
+                    });
+                    sampleLinks.splice(0, sampleLinks.length, ...newOrder);
+                    renderManualLinksTable();
+                    console.log("Updated order:", sampleLinks);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderManualLinksTable();
+
+            document.getElementById("addLinkButton").addEventListener("click", () => {
+                sampleLinks.push({ from: "", to: "" });
+                renderManualLinksTable();
+            });
+        });
+        
     </script>
     <my-custom-element></my-custom-element>
     <span>I am not in the shadow DOM</span>
