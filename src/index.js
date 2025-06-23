@@ -150,7 +150,7 @@ var parseMetadata = metadata => {
             console.log('Processed nodes:', nodes);
             console.log('Processed links:', links);
 
-            const validMeasureNames = nodes.map(n => n.name) || [];
+            const validMeasureNames = measures.map(m => m.label) || [];
             if (JSON.stringify(this._lastSentMeasures) !== JSON.stringify(validMeasureNames)) {
                 this._lastSentMeasures = validMeasureNames;
                 this.dispatchEvent(new CustomEvent('propertiesChanged', {
