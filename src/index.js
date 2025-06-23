@@ -4,6 +4,7 @@ import { parseMetadata } from './data/metadataParser';
 import { processSankeyData } from './data/dataProcessor';
 import { applyHighchartsDefaults } from './config/highchartsSetup';
 import { createChartStylesheet } from './config/styles';
+import { updateSubtitle } from './config/chartUtils';
 import { scaleValue } from './formatting/scaleFormatter';
 import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipFormatters';
 
@@ -113,7 +114,7 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
 
 
             const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
-            const subtitleText = this._updateSubtitle();
+            const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
 
             const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
             this.nodes = nodes;
@@ -189,76 +190,32 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
         }
 
-        // /**
-        //  * 
-        //  * @param {Function} scaleFormat - A function to scale and format the value.
-        //  * @returns {Function} A function that formats the tooltip for the point.
-        //  */
-        // _formatTooltipPoint(scaleFormat) {
-        //     return function () {
-        //         console.log(this);
-        //         if (this) {
-        //             const { scaledValue, valueSuffix } = scaleFormat(this.weight);
-        //             const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
-        //             const valueWithSuffix = `${value} ${valueSuffix}`;
-        //             const fromNodeName = this.from;
-        //             const toNodeName = this.to;
-        //             return `
-        //                 ${fromNodeName} \u2192 ${toNodeName}: ${valueWithSuffix}
-        //             `;
-        //         } else {
-        //             return 'Error with data';
-        //         }
-        //     }
-        // }
-
-        // /**
-        //  * 
-        //  * @param {Function} scaleFormat - A function to scale and format the value.
-        //  * @returns {Function} A function that formats the tooltip for the node.
-        //  */
-        // _formatTooltipNode(scaleFormat) {
-        //     return function () {
-        //         if (this) {
-        //             const { scaledValue, valueSuffix } = scaleFormat(this.sum);
-        //             const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
-        //             const valueWithSuffix = `${value} ${valueSuffix}`;
-        //             const name = this.name;
-        //             return `
-        //                 ${name}: ${valueWithSuffix}
-        //             `;
-        //         } else {
-        //             return 'Error with data';
-        //         }
-        //     }
-        // }
-
         /**
          * Determines subtitle text based on scale format or user input.
          * @returns {string} The subtitle text.
          */
-        _updateSubtitle() {
-            if (!this.chartSubtitle || this.chartSubtitle.trim() === '') {
-                let subtitleText = '';
-                switch (this.scaleFormat) {
-                    case 'k':
-                        subtitleText = 'in k';
-                        break;
-                    case 'm':
-                        subtitleText = 'in m';
-                        break;
-                    case 'b':
-                        subtitleText = 'in b';
-                        break;
-                    default:
-                        subtitleText = '';
-                        break;
-                }
-                return subtitleText;
-            } else {
-                return this.chartSubtitle;
-            }
-        }
+        // _updateSubtitle() {
+        //     if (!this.chartSubtitle || this.chartSubtitle.trim() === '') {
+        //         let subtitleText = '';
+        //         switch (this.scaleFormat) {
+        //             case 'k':
+        //                 subtitleText = 'in k';
+        //                 break;
+        //             case 'm':
+        //                 subtitleText = 'in m';
+        //                 break;
+        //             case 'b':
+        //                 subtitleText = 'in b';
+        //                 break;
+        //             default:
+        //                 subtitleText = '';
+        //                 break;
+        //         }
+        //         return subtitleText;
+        //     } else {
+        //         return this.chartSubtitle;
+        //     }
+        // }
 
         // SAC scripting methods
 
