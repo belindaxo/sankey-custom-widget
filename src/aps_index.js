@@ -166,7 +166,11 @@
             <td>Center Node:</td>
         </tr>
         <tr>
-            <td><input id="centerNode" type="text" placeholder="e.g. Revenue" /></td>
+            <td>
+                <select id="centerNode">
+                    <option value=""> Select Center Node </option>
+                </select>
+            </td>
         </tr>
         <div id="linksContainer" style="margin-bottom: 10px;"></div>
         <button type="button" id="addLinkButton">+ Add Link</button>
@@ -204,6 +208,17 @@
 
             this._shadowRoot = this.attachShadow({ mode: 'open' });
             this._shadowRoot.appendChild(template.content.cloneNode(true));
+
+            this._centerNodeDropdown = this._shadowRoot.getElementById('centerNode');
+            this._populateCenterNodeDropdown = (measures) => {
+                this._centerNodeDropdown.innerHTML = '<option value=""> Select Center Node </option>';
+                measures.forEach(measure => {
+                    const option = document.createElement('option');
+                    option.value = measure;
+                    option.textContent = measure;
+                    this._centerNodeDropdown.appendChild(option);
+                });
+            };
 
             this.manualLinks = [];
 
@@ -492,6 +507,9 @@
             this._validMeasureNames = value || [];
             if (this._renderLinksTable) {
                 this._renderLinksTable();
+            }
+            if (this._populateCenterNodeDropdown) {
+                this._populateCenterNodeDropdown(this._validMeasureNames);
             }
         }
 
