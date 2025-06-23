@@ -100,7 +100,7 @@
         "linkColorMode": {
             "type": "string",
             "description": "The color mode of the links (from, to, gradient)",
-            "default": "from"
+            "default": "to"
         },
         "centerNode": {
             "type": "string",
@@ -115,6 +115,11 @@
         "validMeasureNames": {
             "type": "string[]",
             "description": "List of valid measure names used in the chart.",
+            "default": []
+        },
+        "customColors": {
+            "type": "CustomColor[]",
+            "description": "List of measure-color mappings for nodes.",
             "default": []
         }
     },
@@ -167,6 +172,19 @@
                 },
                 {
                     "name": "to", 
+                    "type": "string"
+                }
+            ]
+        },
+        "CustomColor": {
+            "description": "Represents a custom color for a measure (node).",
+            "properties": [
+                {
+                    "name": "category",
+                    "type": "string"
+                },
+                {
+                    "name": "color",
                     "type": "string"
                 }
             ]

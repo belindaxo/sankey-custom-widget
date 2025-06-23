@@ -56,63 +56,63 @@
                 this.nodes = [
                     {
                         name: 'Product Revenue',
-                        colorIndex: 0
+                        color: colors[0]
                     },
                     {
                         name: 'Order Revenue',
-                        colorIndex: 0
+                        color: colors[0]
                     },
                     {
                         name: 'Service Revenue',
-                        colorIndex: 0
+                        color: colors[0]
                     },
                     {
                         name: 'Project Revenue',
-                        colorIndex: 0
+                        color: colors[0]
                     },
                     {
                         name: 'Order COGS',
-                        colorIndex: 1
+                        color: colors[1]
                     },
                     {
                         name: 'Other Revenue',
-                        colorIndex: 0
+                        color: colors[0]
                     },
                     {
                         name: 'COGS',
-                        colorIndex: 1
+                        color: colors[1]
                     },
                     {
                         name: 'Revenue',
-                        colorIndex: 0
+                        color: colors[0]
                     },
                     {
                         name: 'Total SG&A Expenses',
-                        colorIndex: 1
+                        color: colors[1]
                     },
                     {
                         name: 'Order Margin',
-                        colorIndex: 2
+                        color: colors[2]
                     },
                     {
                         name: 'Profit Contribution',
-                        colorIndex: 2
+                        color: colors[2]
                     },
                     {
                         name: 'Other COGS',
-                        colorIndex: 1
+                        color: colors[1]
                     },
                     {
                         name: 'Product COGS',
-                        colorIndex: 1
+                        color: colors[1]
                     },
                     {
                         name: 'Service COGS',
-                        colorIndex: 1
+                        color: colors[1]
                     },
                     {
                         name: 'Project COGS',
-                        colorIndex: 1
+                        color: colors[1]
                     }
                 ]
 
@@ -140,8 +140,7 @@
                     {
                         from: 'Revenue',
                         to: 'COGS',
-                        weight: 258,
-                        color: colors[1]
+                        weight: 258
                     },
                     {
                         from: 'Other Revenue',
@@ -166,8 +165,7 @@
                     {
                         from: 'Order COGS',
                         to: 'Service COGS',
-                        weight: 21,
-                        color: colors[1]
+                        weight: 21
                     },
                     {
                         from: 'Order COGS',
@@ -177,20 +175,17 @@
                     {
                         from: 'Revenue',
                         to: 'Order Margin',
-                        weight: 127,
-                        color: colors[2]
+                        weight: 127
                     },
                     {
                         from: 'Order Margin',
                         to: 'Profit Contribution',
-                        weight: 79,
-                        color: colors[2]
+                        weight: 79
                     },
                     {
                         from: 'Order Margin',
                         to: 'Total SG&A Expenses',
-                        weight: 49,
-                        color: colors[1]
+                        weight: 49
                     }
                 ]
 
@@ -203,7 +198,7 @@
                 }));
                 const formattedNodes = this.nodes.map(node => ({
                     id: node.name,
-                    color: colors[node.colorIndex] || undefined,
+                    color: node.color,
                     name: node.name
                 }));
                 console.log('data', data);
@@ -222,7 +217,7 @@
                         nodes: formattedNodes,
                         data: data,
                         type: 'sankey',
-                        linkColorMode: 'to'
+                        linkColorMode: 'to',
                     }]
                 });
             }
@@ -379,8 +374,8 @@
             <tr>
                 <td>
                     <select id="linkColorMode">
-                        <option value="from" selected>From</option>
-                        <option value="to">To</option>
+                        <option value="from">From</option>
+                        <option value="to" selected>To</option>
                         <option value="gradient">Gradient</option>
                 </td>
             </tr>

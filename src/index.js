@@ -93,7 +93,8 @@ var parseMetadata = metadata => {
                 'chartTitle', 'titleSize', 'titleFontStyle', 'titleAlignment', 'titleColor',                // Title properties
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
-                'isInverted', "linkColorMode", "manualLinks", "centerNode"                                  // Sankey chart properties
+                'isInverted', "linkColorMode", "manualLinks", "centerNode",                                 // Sankey chart properties
+                'customColors'
             ];
         }
 
@@ -162,6 +163,14 @@ var parseMetadata = metadata => {
                 }));
             }
 
+            const customColors = this.customColors || [];
+            const colorMap = new Map(customColors.map(c => [c.category, c.color]));
+            nodes.forEach(node => {
+                if (colorMap.has(node.name)) {
+                    node.color = colorMap.get(node.name);
+                }
+            });
+
             Highcharts.setOptions({
                 lang: {
                     thousandsSep: ','
@@ -208,7 +217,7 @@ var parseMetadata = metadata => {
                     nodes: nodes,
                     data: links,
                     type: 'sankey',
-                    linkColorMode: this.linkColorMode || 'from',
+                    linkColorMode: this.linkColorMode || 'to',
                 }]
             };
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
