@@ -212,6 +212,17 @@
                     tooltip: {
                         headerFormat: null
                     },
+                    plotOptions: {
+                        series: {
+                            dataLabels: {
+                                enabled: true,
+                                color: '#000000',
+                                style: {
+                                    fontWeight: 'normal',
+                                }
+                            }
+                        }
+                    },
                     series: [{
                         keys: ['from', 'to', 'weight'],
                         nodes: formattedNodes,

@@ -1,27 +1,12 @@
 import * as Highcharts from 'highcharts';
 import 'highcharts/modules/sankey';
+import { parseMetadata } from './data/metadataParser';
 import { processSankeyData } from './data/dataProcessor';
-
-/**
- * Parses metadata into structured dimensions and measures.
- * @param {Object} metadata - The metadata object from SAC data binding.
- * @returns {Object} An object containing parsed dimensions, measures, and their maps.
- */
-var parseMetadata = metadata => {
-    const { dimensions: dimensionsMap, mainStructureMembers: measuresMap } = metadata;
-    const dimensions = [];
-    for (const key in dimensionsMap) {
-        const dimension = dimensionsMap[key];
-        dimensions.push({ key, ...dimension });
-    }
-
-    const measures = [];
-    for (const key in measuresMap) {
-        const measure = measuresMap[key];
-        measures.push({ key, ...measure });
-    }
-    return { dimensions, measures, dimensionsMap, measuresMap };
-}
+import { applyHighchartsDefaults } from './config/highchartsSetup';
+import { createChartStylesheet } from './config/styles';
+import { updateSubtitle } from './config/chartUtils';
+import { scaleValue } from './formatting/scaleFormatter';
+import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipFormatters';
 
 (function () {
     class Sankey extends HTMLElement {
@@ -32,22 +17,8 @@ var parseMetadata = metadata => {
             this.nodes = [];
             this.links = [];
 
-            // Create a CSSStyleSheet for the shadow DOM
-            const sheet = new CSSStyleSheet();
-            sheet.replaceSync(`
-                @font-face {
-                    font-family: '72';
-                    src: url('../fonts/72-Regular.woff2') format('woff2');
-                }
-                #container {
-                    width: 100%;
-                    height: 100%;
-                    font-family: '72';
-                }
-            `);
-
             // Apply the stylesheet to the shadow DOM
-            this.shadowRoot.adoptedStyleSheets = [sheet];
+            this.shadowRoot.adoptedStyleSheets = [createChartStylesheet()];
 
             // Add the container for the chart
             this.shadowRoot.innerHTML = `
@@ -94,7 +65,7 @@ var parseMetadata = metadata => {
                 'chartSubtitle', 'subtitleSize', 'subtitleFontStyle', 'subtitleAlignment', 'subtitleColor', // Subtitle properties
                 'scaleFormat', 'decimalPlaces',                                                             // Number formatting properties
                 'isInverted', "linkColorMode", "manualLinks", "centerNode",                                 // Sankey chart properties
-                'customColors'
+                'customColors'                                                                              // Custom colors
             ];
         }
 
@@ -115,6 +86,7 @@ var parseMetadata = metadata => {
          * Renders the chart using the provided data and metadata.
          */
         _renderChart() {
+            // Initialization
             const dataBinding = this.dataBinding;
             if (!dataBinding || dataBinding.state !== 'success' || !dataBinding.data || dataBinding.data.length === 0) {
                 if (this._chart) {
@@ -124,6 +96,9 @@ var parseMetadata = metadata => {
                 return;
             }
             console.log('dataBinding:', dataBinding);
+
+            
+            // Data Extraction and Validation
             const { data, metadata } = dataBinding;
             const { dimensions, measures } = parseMetadata(metadata);
 
@@ -134,17 +109,13 @@ var parseMetadata = metadata => {
                 }
                 return;
             }
-
             console.log('data:', data);
             console.log('metadata:', metadata);
             console.log('dimensions:', dimensions);
             console.log('measures:', measures);
 
 
-
-            const scaleFormat = (value) => this._scaleFormat(value);
-            const subtitleText = this._updateSubtitle();
-
+            // Series Data Preparation
             const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
             this.nodes = nodes;
             this.links = links;
@@ -163,6 +134,13 @@ var parseMetadata = metadata => {
                 }));
             }
 
+
+            // Formatters and Chart Options
+            const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
+            const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
+
+
+            // Series Styling
             const customColors = this.customColors || [];
             const colorMap = new Map(customColors.map(c => [c.category, c.color]));
             nodes.forEach(node => {
@@ -171,13 +149,12 @@ var parseMetadata = metadata => {
                 }
             });
 
-            Highcharts.setOptions({
-                lang: {
-                    thousandsSep: ','
-                },
-                colors: ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#006ac7', '#ccced2', '#bf8028', '#00e4a7']
-            });
 
+            // Global Configurations
+            applyHighchartsDefaults();
+
+
+            // Chart Options Construction
             const chartOptions = {
                 chart: {
                     type: 'sankey',
@@ -209,8 +186,8 @@ var parseMetadata = metadata => {
                 },
                 tooltip: {
                     headerFormat: null,
-                    pointFormatter: this._formatTooltipPoint(scaleFormat),
-                    nodeFormatter: this._formatTooltipNode(scaleFormat),
+                    pointFormatter: formatTooltipPoint(scaleFormat),
+                    nodeFormatter: formatTooltipNode(scaleFormat),
                 },
                 series: [{
                     keys: ['from', 'to', 'weight'],
@@ -223,105 +200,8 @@ var parseMetadata = metadata => {
             this._chart = Highcharts.chart(this.shadowRoot.getElementById('container'), chartOptions);
         }
 
-        /**
-         * 
-         * @param {Function} scaleFormat - A function to scale and format the value.
-         * @returns {Function} A function that formats the tooltip for the point.
-         */
-        _formatTooltipPoint(scaleFormat) {
-            return function () {
-                console.log(this);
-                if (this) {
-                    const { scaledValue, valueSuffix } = scaleFormat(this.weight);
-                    const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
-                    const valueWithSuffix = `${value} ${valueSuffix}`;
-                    const fromNodeName = this.from;
-                    const toNodeName = this.to;
-                    return `
-                        ${fromNodeName} \u2192 ${toNodeName}: ${valueWithSuffix}
-                    `;
-                } else {
-                    return 'Error with data';
-                }
-            }
-        }
 
-        /**
-         * 
-         * @param {Function} scaleFormat - A function to scale and format the value.
-         * @returns {Function} A function that formats the tooltip for the node.
-         */
-        _formatTooltipNode(scaleFormat) {
-            return function () {
-                if (this) {
-                    const { scaledValue, valueSuffix } = scaleFormat(this.sum);
-                    const value = Highcharts.numberFormat(scaledValue, -1, '.', ',');
-                    const valueWithSuffix = `${value} ${valueSuffix}`;
-                    const name = this.name;
-                    return `
-                        ${name}: ${valueWithSuffix}
-                    `;
-                } else {
-                    return 'Error with data';
-                }
-            }
-        }
-
-        /**
-         * Determines subtitle text based on scale format or user input.
-         * @returns {string} The subtitle text.
-         */
-        _updateSubtitle() {
-            if (!this.chartSubtitle || this.chartSubtitle.trim() === '') {
-                let subtitleText = '';
-                switch (this.scaleFormat) {
-                    case 'k':
-                        subtitleText = 'in k';
-                        break;
-                    case 'm':
-                        subtitleText = 'in m';
-                        break;
-                    case 'b':
-                        subtitleText = 'in b';
-                        break;
-                    default:
-                        subtitleText = '';
-                        break;
-                }
-                return subtitleText;
-            } else {
-                return this.chartSubtitle;
-            }
-        }
-
-        _scaleFormat(value) {
-            let scaledValue = value;
-            let valueSuffix = '';
-
-            switch (this.scaleFormat) {
-                case 'k':
-                    scaledValue = value / 1000;
-                    valueSuffix = 'k';
-                    break;
-                case 'm':
-                    scaledValue = value / 1000000;
-                    valueSuffix = 'm';
-                    break;
-                case 'b':
-                    scaledValue = value / 1000000000;
-                    valueSuffix = 'b';
-                    break;
-                default:
-                    break;
-            }
-            return {
-                scaledValue: scaledValue.toFixed(this.decimalPlaces),
-                valueSuffix
-            };
-        }
-
-        // SAC scripting methods
-
+        // SAC Scripting Methods
         getNodes() {
             return this.nodes;
         }
