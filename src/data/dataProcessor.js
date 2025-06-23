@@ -22,7 +22,7 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
             });
         }
 
-        visited.delete(start); // optional: exclude the center itself
+        visited.delete(start); 
         return visited;
     }
 
