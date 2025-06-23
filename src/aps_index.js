@@ -236,7 +236,6 @@
                     });
 
                     const toSelect = document.createElement('select');
-                    toSelect.type = 'text';
                     toSelect.style.marginRight = '6px';
 
                     this.validMeasureNames?.forEach(measure => {
@@ -248,7 +247,7 @@
                         }
                         toSelect.appendChild(option);
                     });
-                    
+
                     toSelect.addEventListener('input', () => {
                         this.manualLinks[index].to = toSelect.value;
                         this._submit(new Event('submit'));
@@ -485,6 +484,7 @@
         }
 
         set validMeasureNames(value) {
+            console.log("validMeasureNames set to:", value);
             this._validMeasureNames = value || [];
             if (this._renderLinksTable) {
                 this._renderLinksTable();
