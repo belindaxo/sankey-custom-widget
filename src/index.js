@@ -7,6 +7,7 @@ import { createChartStylesheet } from './config/styles';
 import { updateSubtitle } from './config/chartUtils';
 import { scaleValue } from './formatting/scaleFormatter';
 import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipFormatters';
+import { handlePointClick } from './interactions/eventHandlers';
 
 (function () {
     class Sankey extends HTMLElement {
@@ -138,6 +139,7 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
             // Formatters and Chart Options
             const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
             const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
+            const onPointClick = (event) => handlePointClick(event, dataBinding, measures, this);
 
 
             // Series Styling
@@ -191,10 +193,17 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
                 },
                 plotOptions: {
                     series: {
+                        allowPointSelect: true,
                         dataLabels: {
                             enabled: true,
                             style: {
                                 fontWeight: 'normal'
+                            }
+                        },
+                        point: {
+                            events: {
+                                select: onPointClick,
+                                unselect: onPointClick
                             }
                         }
                     }
