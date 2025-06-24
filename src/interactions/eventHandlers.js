@@ -1,11 +1,11 @@
 /**
  * Event handler for point click events.
  * @param {Object} event - The event object containing the click event.
- * @param {Object} dataBinding - The data binding object containing the data.
+ * @param {Object} linkedAnalysis - The linked analysis object.
  * @param {Array} measures - Array of measure objects.
  * @param {Object} widget - Reference to the widget ('this', in context).
  */
-export function handlePointClick(event, dataBinding, measures, widget) {
+export function handlePointClick(event, linkedAnalysis, measures, widget) {
     const point = event.target;
     if (!point) {
         console.log('Point is undefined');
@@ -18,8 +18,6 @@ export function handlePointClick(event, dataBinding, measures, widget) {
     console.log('Selected item:', selectedItem);
     const measureKey = selectedItem.key;
     const measureId = selectedItem.id;
-
-    const linkedAnalysis = dataBinding.getLinkedAnalysis();
 
     if (widget._selectedPoint && widget._selectedPoint !== point) {
         linkedAnalysis.removeFilters();

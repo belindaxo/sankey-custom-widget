@@ -148,8 +148,9 @@ import { handlePointClick } from './interactions/eventHandlers';
             // Formatters and Chart Options
             const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
             const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
+            const linkedAnalysis = this.dataBindings.getDataBinding('dataBinding').getLinkedAnalysis();
 
-            const onPointClick = (event) => handlePointClick(event, dataBinding, measures, this);
+            const onPointClick = (event) => handlePointClick(event, linkedAnalysis, measures, this);
 
 
             // Series Styling
