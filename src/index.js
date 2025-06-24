@@ -189,6 +189,16 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
                     pointFormatter: formatTooltipPoint(scaleFormat),
                     nodeFormatter: formatTooltipNode(scaleFormat),
                 },
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            style: {
+                                fontWeight: 'normal'
+                            }
+                        }
+                    }
+                },
                 series: [{
                     keys: ['from', 'to', 'weight'],
                     nodes: nodes,
