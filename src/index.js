@@ -27,6 +27,7 @@ import { handlePointClick } from './interactions/eventHandlers';
             `;
 
             this._lastSentMeasures = [];
+            this._selectedPoint = null;
         }
 
         /**
@@ -54,6 +55,7 @@ import { handlePointClick } from './interactions/eventHandlers';
                 this._chart.destroy();
                 this._chart = null;
             }
+            this._selectedPoint = null;
         }
 
         /**
@@ -93,6 +95,7 @@ import { handlePointClick } from './interactions/eventHandlers';
                 if (this._chart) {
                     this._chart.destroy();
                     this._chart = null;
+                    this._selectedPoint = null;
                 }
                 return;
             }
@@ -107,6 +110,7 @@ import { handlePointClick } from './interactions/eventHandlers';
                 if (this._chart) {
                     this._chart.destroy();
                     this._chart = null;
+                    this._selectedPoint = null;
                 }
                 return;
             }
@@ -139,6 +143,7 @@ import { handlePointClick } from './interactions/eventHandlers';
             // Formatters and Chart Options
             const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
             const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
+            
             const onPointClick = (event) => handlePointClick(event, dataBinding, measures, this);
 
 

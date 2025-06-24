@@ -1,10 +1,17 @@
+/**
+ * Event handler for point click events.
+ * @param {Object} event - The event object containing the click event.
+ * @param {Object} dataBinding - The data binding object containing the data.
+ * @param {Array} measures - Array of measure objects.
+ * @param {Object} widget - Reference to the widget ('this', in context).
+ */
 export function handlePointClick(event, dataBinding, measures, widget) {
     const point = event.target;
     if (!point) {
         return;
     }
 
-    const clickedLabel = point.isNode ? point.name : point.to;
+    const clickedLabel = point.to;
     const clickedMeasure = measures.find(m => m.label === clickedLabel);
 
     if (!clickedMeasure) {
@@ -13,7 +20,7 @@ export function handlePointClick(event, dataBinding, measures, widget) {
     }
 
     const measureId = clickedMeasure.id;
-    const measureMemberId = clickedMeasure.memberId;
+    const measureMemberId = clickedMeasure.key;
 
     console.log(`Clicked measure: ${clickedMeasure.label}, ID: ${measureId}, Member ID: ${measureMemberId}`);
 
@@ -27,10 +34,10 @@ export function handlePointClick(event, dataBinding, measures, widget) {
         widget._selectedPoint = null;
     }
 
-    if (point.selected) {
+    if (event.type === 'select') {
         linkedAnalysis.setFilters(selection);
         widget._selectedPoint = point;
-    } else {
+    } else if (event.type === 'unselect') {
         linkedAnalysis.removeFilters();
         widget._selectedPoint = null;
     }
