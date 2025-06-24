@@ -28,7 +28,7 @@ export function handlePointClick(event, dataBinding, measures, widget) {
     }
 
     if (point.selected) {
-        linkedAnalysis.setFilters(selectionObj);
+        linkedAnalysis.setFilters(selection);
         widget._selectedPoint = point;
     } else {
         linkedAnalysis.removeFilters();
