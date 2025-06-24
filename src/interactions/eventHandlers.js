@@ -8,35 +8,32 @@
 export function handlePointClick(event, dataBinding, measures, widget) {
     const point = event.target;
     if (!point) {
+        console.log('Point is undefined');
         return;
     }
 
     const clickedLabel = point.to;
-    const clickedMeasure = measures.find(m => m.label === clickedLabel);
+    const selectedItem = measures.find(m => m.label === clickedLabel);
+    console.log('Clicked label:', clickedLabel);
+    console.log('Selected item:', selectedItem);
+    const measureKey = selectedItem.key;
+    const measureId = selectedItem.id;
 
-    if (!clickedMeasure) {
-        console.log(`Clicked measure "${clickedLabel}" not found in measures.`);
-        return;
-    }
-
-    const measureId = clickedMeasure.id;
-    const measureMemberId = clickedMeasure.key;
-
-    console.log(`Clicked measure: ${clickedMeasure.label}, ID: ${measureId}, Member ID: ${measureMemberId}`);
-
-    const selection = { [measureId]: measureMemberId };
-
-    const linkedAnalysis = widget.databindings.getDataBinding('dataBinding').getLinkedAnalysis();
+    const linkedAnalysis = dataBinding.getLinkedAnalysis();
 
     if (widget._selectedPoint && widget._selectedPoint !== point) {
         linkedAnalysis.removeFilters();
-        widget._selectedPoint.select(false, false)
+        widget._selectedPoint.select(false, false);
         widget._selectedPoint = null;
     }
 
     if (event.type === 'select') {
-        linkedAnalysis.setFilters(selection);
-        widget._selectedPoint = point;
+        if (selectedItem) {
+            const selection = {};
+            selection[measureId] = selectedItem[measureKey].id;
+            linkedAnalysis.setFilters(selection);
+            widget._selectedPoint = point;
+        }
     } else if (event.type === 'unselect') {
         linkedAnalysis.removeFilters();
         widget._selectedPoint = null;

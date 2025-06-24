@@ -10,6 +10,11 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
 import { handlePointClick } from './interactions/eventHandlers';
 
 (function () {
+
+    /**
+     * Custom Web Component for rendering a Sankey Chart in SAP Analytics Cloud.
+     * @extends HTMLElement
+     */
     class Sankey extends HTMLElement {
         constructor() {
             super();
@@ -143,7 +148,7 @@ import { handlePointClick } from './interactions/eventHandlers';
             // Formatters and Chart Options
             const scaleFormat = (value) => scaleValue(value, this.scaleFormat, this.decimalPlaces);
             const subtitleText = updateSubtitle(this.chartSubtitle, this.scaleFormat);
-            
+
             const onPointClick = (event) => handlePointClick(event, dataBinding, measures, this);
 
 
@@ -199,6 +204,7 @@ import { handlePointClick } from './interactions/eventHandlers';
                 plotOptions: {
                     series: {
                         allowPointSelect: true,
+                        cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
                             style: {
