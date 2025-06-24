@@ -162,7 +162,7 @@ const defaultColors = ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#
         <tr>
             <button id="resetDefaults" type="button" style="margin-top: 10px; margin-bottom: 10px;">Reset to Default</button>
         </tr>
-        <legend style="font-weight: bold; font-size: 18px;">Link Definitions</legend>
+        <legend style="font-weight: bold; font-size: 18px; margin-bottom: 8px;">Link Definitions</legend>
         <tr>
             <td>Center Node:</td>
         </tr>
@@ -173,8 +173,8 @@ const defaultColors = ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#
                 </select>
             </td>
         </tr>
-        <div id="linksContainer" style="margin-bottom: 10px;"></div>
-        <button type="button" id="addLinkButton">+ Add Link</button>
+        <div id="linksContainer" style="margin-bottom: 10px; margin-top: 8px;"></div>
+        <button type="button" id="addLinkButton" style="margin-bottom: 10px;">+ Add Link</button>
         <legend style="font-weight: bold; font-size: 18px;">Node Colors</legend>
         <div id="measureColorGrid" style="margin-top: 8px;"></div>
         <tr>
