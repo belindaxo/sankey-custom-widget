@@ -28,7 +28,7 @@ export function handlePointClick(event, linkedAnalysis, measures, widget) {
     if (event.type === 'select') {
         if (selectedItem) {
             const selection = {};
-            selection[measureId] = selectedItem[measureKey].id;
+            selection[measureId] = selectedItem.id;
             linkedAnalysis.setFilters(selection);
             widget._selectedPoint = point;
         }
