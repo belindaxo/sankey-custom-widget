@@ -1,6 +1,6 @@
 {
     "name": "Sankey Chart",
-    "description": "A Sankey chart with data binding support",
+    "description": "A Sankey chart using multiple measures.",
     "eula": "",
     "vendor": "",
     "license": "",
