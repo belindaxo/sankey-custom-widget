@@ -13,14 +13,14 @@
             "tag": "com-sap-sample-sankey",
             "url": "https://belindaxo.github.io/sankey-custom-widget/dist/bundle.js",
             "integrity": "sha256-RS6RsOsAILZUbmtoTfd3dMzX+HRCC3ZvHLZ4stVsovg=",
-            "ignoreIntegrity": false
+            "ignoreIntegrity": true
         },
         {
             "kind": "styling",
             "tag": "com-sap-sample-sankey-aps",
             "url": "https://belindaxo.github.io/sankey-custom-widget/dist/bundle.js",
             "integrity": "sha256-RS6RsOsAILZUbmtoTfd3dMzX+HRCC3ZvHLZ4stVsovg=",
-            "ignoreIntegrity": false
+            "ignoreIntegrity": true
         }
     ],
     "properties": {

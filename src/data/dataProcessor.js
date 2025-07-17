@@ -38,10 +38,10 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
 
         const fromKey = measureKeyMap[from];
         const toKey = measureKeyMap[to];
-        if (!fromKey || !toKey) {
-            console.log('Invalid measure in link, skipping: ', link);
-            return;
-        }
+        // if (!fromKey || !toKey) {
+        //     console.log('Invalid measure in link, skipping: ', link);
+        //     return;
+        // }
 
         let weight;
         if (to === centerNode) {
