@@ -302,6 +302,7 @@ const defaultColors = ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#
 
                     const fromSelect = document.createElement('select');
                     fromSelect.style.marginRight = '6px';
+                    fromSelect.textContent = 'From';
 
                     this.validMeasureNames?.forEach(measure => {
                         const option = document.createElement('option');
@@ -321,6 +322,7 @@ const defaultColors = ['#004b8d', '#939598', '#faa834', '#00aa7e', '#47a5dc', '#
 
                     const toSelect = document.createElement('select');
                     toSelect.style.marginRight = '6px';
+                    toSelect.textContent = 'To';
 
                     this.validMeasureNames?.forEach(measure => {
                         const option = document.createElement('option');
