@@ -102,7 +102,7 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
             const { data, metadata } = dataBinding;
             const { dimensions, measures } = parseMetadata(metadata);
 
-            if (dimensions.length === 0 || measures.length === 0) {
+            if (measures.length === 0) {
                 if (this._chart) {
                     this._chart.destroy();
                     this._chart = null;
@@ -116,7 +116,7 @@ import { formatTooltipPoint, formatTooltipNode } from './formatting/tooltipForma
 
 
             // Series Data Preparation
-            const { nodes, links } = processSankeyData(data, dimensions, measures, this.manualLinks, this.centerNode || []);
+            const { nodes, links } = processSankeyData(data, measures, this.manualLinks, this.centerNode || []);
             this.nodes = nodes;
             this.links = links;
             console.log('Processed nodes:', nodes);

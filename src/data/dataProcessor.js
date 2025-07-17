@@ -1,4 +1,4 @@
-export function processSankeyData(data, dimensions, measures, manualLinks, centerNode) {
+export function processSankeyData(data, measures, manualLinks, centerNode) {
     const measureKeyMap = {};
     measures.forEach(m => {
         measureKeyMap[m.label] = m.key;
