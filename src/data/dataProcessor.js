@@ -3,6 +3,7 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
     measures.forEach(m => {
         measureKeyMap[m.label] = m.key;
     });
+    console.log("Measure key map:", measureKeyMap);
 
     const usedMeasureNames = new Set();
     const linkMap = new Map();
@@ -31,17 +32,9 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
     manualLinks.forEach(link => {
         const from = link.from?.trim();
         const to = link.to?.trim();
-        // if (!from || !to) {
-        //     console.log('Invalid link detected, skipping: ', link);
-        //     return;
-        // }
 
         const fromKey = measureKeyMap[from];
         const toKey = measureKeyMap[to];
-        // if (!fromKey || !toKey) {
-        //     console.log('Invalid measure in link, skipping: ', link);
-        //     return;
-        // }
 
         let weight;
         if (to === centerNode) {
