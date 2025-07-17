@@ -31,10 +31,10 @@ export function processSankeyData(data, dimensions, measures, manualLinks, cente
     manualLinks.forEach(link => {
         const from = link.from?.trim();
         const to = link.to?.trim();
-        if (!from || !to) {
-            console.log('Invalid link detected, skipping: ', link);
-            return;
-        }
+        // if (!from || !to) {
+        //     console.log('Invalid link detected, skipping: ', link);
+        //     return;
+        // }
 
         const fromKey = measureKeyMap[from];
         const toKey = measureKeyMap[to];
