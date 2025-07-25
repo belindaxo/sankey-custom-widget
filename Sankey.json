@@ -12,15 +12,15 @@
             "kind": "main",
             "tag": "com-sap-sample-sankey",
             "url": "https://belindaxo.github.io/sankey-custom-widget/dist/bundle.js",
-            "integrity": "sha256-RS6RsOsAILZUbmtoTfd3dMzX+HRCC3ZvHLZ4stVsovg=",
-            "ignoreIntegrity": true
+            "integrity": "sha256-GVG2iIZwveGUFZxVrWWGlfGaf8fYa+gmq2BGbQFcaG0=",
+            "ignoreIntegrity": false
         },
         {
             "kind": "styling",
             "tag": "com-sap-sample-sankey-aps",
             "url": "https://belindaxo.github.io/sankey-custom-widget/dist/bundle.js",
-            "integrity": "sha256-RS6RsOsAILZUbmtoTfd3dMzX+HRCC3ZvHLZ4stVsovg=",
-            "ignoreIntegrity": true
+            "integrity": "sha256-GVG2iIZwveGUFZxVrWWGlfGaf8fYa+gmq2BGbQFcaG0=",
+            "ignoreIntegrity": false
         }
     ],
     "properties": {
