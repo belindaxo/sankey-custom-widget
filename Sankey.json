@@ -6,6 +6,7 @@
     "license": "",
     "id": "com.sap.sample.sankey",
     "newInstancePrefix": "Sankey",
+    "supportsMobile": true,
     "version": "1.0.0",
     "webcomponents": [
         {
